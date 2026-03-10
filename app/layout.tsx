@@ -27,7 +27,17 @@ const instrumentSans = localFont({
 export const metadata: Metadata = {
 	title: 'Lexis',
 	description: 'Логіка української мови',
-	generator: 'v0.app'
+	generator: 'v0.app',
+	icons: {
+		icon: [
+			{ url: '/favicon.ico', sizes: 'any' },
+			{ url: '/favicon.svg', type: 'image/svg+xml' },
+			{ url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' }
+		],
+		apple: [
+			{ url: '/favicon-180x180.png', sizes: '180x180', type: 'image/png' }
+		]
+	}
 }
 
 export default function RootLayout({
