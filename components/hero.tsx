@@ -1,8 +1,6 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { cubicBezier, motion } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 
 const avatars = [
@@ -88,28 +86,7 @@ export function Hero() {
 					Застосовуючи логіку в міркуваннях, ти неминуче доходиш до істини.
 				</motion.p>
 
-				{/* CTAs */}
-				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.6, delay: 0.6 }}
-					className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
-				>
-					<Button
-						size="lg"
-						className="shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200 rounded-full px-8 h-12 text-base font-medium shadow-lg shadow-white/10"
-					>
-						Розпочати
-						<ArrowRight className="ml-2 w-4 h-4" />
-					</Button>
-					<Button
-						variant="outline"
-						size="lg"
-						className="rounded-full px-8 h-12 text-base font-medium border-zinc-800 text-zinc-300 hover:bg-zinc-900 hover:text-white hover:border-zinc-700 bg-transparent"
-					>
-						Демонстрація
-					</Button>
-				</motion.div>
+				{/* CTAs removed per request */}
 
 				{/* Social Proof */}
 				<motion.div

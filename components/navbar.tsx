@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useRef, useState } from 'react'
 
 import {
@@ -27,9 +28,9 @@ import {
 
 const navItems = [
 	{ label: 'Словники', href: '/features' },
-	{ label: 'Ціни', href: '#pricing' },
-	{ label: 'Документація', href: '#docs' },
-	{ label: 'Блог', href: '#blog' }
+	{ label: 'Логоскоп', href: '/logoskop' },
+	{ label: 'Документація', href: '/docs' },
+	{ label: 'Блог', href: '/blog' }
 ]
 
 export function Navbar() {
@@ -37,6 +38,7 @@ export function Navbar() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 	const navRef = useRef<HTMLDivElement>(null)
 	const session = useSession()
+	const pathname = usePathname()
 
 	console.log('User session:', session)
 
@@ -55,25 +57,38 @@ export function Navbar() {
 				<Logo />
 				{/* Desktop Nav Items */}
 				<div className="hidden md:flex items-center gap-1 relative">
-					{navItems.map((item, index) => (
-						<a
-							key={item.label}
-							href={item.href}
-							className="relative px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors"
-							onMouseEnter={() => setHoveredIndex(index)}
-							onMouseLeave={() => setHoveredIndex(null)}
-						>
-							{hoveredIndex === index && (
-								<motion.div
-									layoutId="navbar-hover"
-									className="absolute inset-0 bg-zinc-800 rounded-full"
-									initial={false}
-									transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-								/>
-							)}
-							<span className="relative z-10">{item.label}</span>
-						</a>
-					))}
+					{navItems.map((item, index) => {
+						const isActive = pathname === item.href
+						const isHovered = hoveredIndex === index
+						const showBackground =
+							isHovered || (isActive && hoveredIndex === null)
+
+						return (
+							<Link
+								key={item.label}
+								href={item.href}
+								className={`relative px-4 py-2 text-sm transition-colors ${
+									isActive
+										? 'text-white font-medium'
+										: 'text-zinc-400 hover:text-white'
+								}`}
+								onMouseEnter={() => setHoveredIndex(index)}
+								onMouseLeave={() => setHoveredIndex(null)}
+							>
+								{showBackground && (
+									<motion.div
+										layoutId="navbar-hover"
+										className={`absolute inset-0 rounded-full ${
+											isActive && !isHovered ? 'bg-zinc-800/60' : 'bg-zinc-800'
+										}`}
+										initial={false}
+										transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+									/>
+								)}
+								<span className="relative z-10">{item.label}</span>
+							</Link>
+						)
+					})}
 				</div>
 				{/* CTA Buttons */}
 				<div className="hidden md:flex items-center gap-3">
@@ -126,12 +141,7 @@ export function Navbar() {
 						</a>
 					)}
 
-					<Button
-						size="sm"
-						className="shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200 rounded-full px-4"
-					>
-						Розпочати
-					</Button>
+					{/* 'Розпочати' button removed as requested */}
 				</div>
 				{/* Mobile Menu Button */}
 				<button
@@ -171,9 +181,7 @@ export function Navbar() {
 								Вхід
 							</Button>
 						</a>
-						<Button className="shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200 rounded-full">
-							Розпочати
-						</Button>
+						{/* 'Розпочати' button removed from mobile menu as requested */}
 					</div>
 				</motion.div>
 			)}
