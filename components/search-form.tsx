@@ -36,21 +36,30 @@ export function SearchForm({ ...props }: React.ComponentProps<'form'>) {
 			onSubmit={handleSubmit}
 		>
 			<SidebarGroup className="py-0">
-				<SidebarGroupContent className="relative">
+				<SidebarGroupContent className="relative flex items-center gap-1">
 					<Label
 						htmlFor="search"
 						className="sr-only"
 					>
-						Search
+						Пошук
 					</Label>
-					<SidebarInput
-						id="search"
-						name="search"
-						defaultValue={searchParams.get('search') ?? ''}
-						placeholder="Search the docs..."
-						className="pl-8"
-					/>
-					<Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
+					<div className="relative flex-1">
+						<SidebarInput
+							id="search"
+							name="search"
+							defaultValue={searchParams.get('search') ?? ''}
+							placeholder="Пошук слова..."
+							className="pl-8 pr-2"
+						/>
+						<Search className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50 select-none" />
+					</div>
+					<button
+						type="submit"
+						className="flex items-center justify-center rounded-md bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent/80 transition-colors size-8 shrink-0"
+						aria-label="Шукати"
+					>
+						<Search className="size-4" />
+					</button>
 				</SidebarGroupContent>
 			</SidebarGroup>
 		</form>

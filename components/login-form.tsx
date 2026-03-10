@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -15,10 +17,44 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import { signIn } from 'next-auth/react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { toast } from 'sonner'
+
 export function LoginForm({
 	className,
 	...props
 }: React.ComponentProps<'div'>) {
+	const router = useRouter()
+	const [isLoading, setIsLoading] = useState(false)
+
+	async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+		event.preventDefault()
+		setIsLoading(true)
+
+		const formData = new FormData(event.currentTarget)
+		const email = formData.get('email') as string
+		const password = formData.get('password') as string
+
+		const result = await signIn('credentials', {
+			email,
+			password,
+			redirect: false
+		})
+
+		setIsLoading(false)
+
+		if (result?.error) {
+			toast.error('Невірна електронна пошта або пароль')
+		} else {
+			toast.success('Ви успішно увійшли!')
+			router.push('/')
+			router.refresh()
+		}
+	}
+
 	return (
 		<div
 			className={cn('flex flex-col gap-6', className)}
@@ -26,18 +62,19 @@ export function LoginForm({
 		>
 			<Card>
 				<CardHeader className="text-center">
-					<CardTitle className="text-xl">Welcome back</CardTitle>
+					<CardTitle className="text-xl">Ласкаво просимо назад</CardTitle>
 					<CardDescription>
-						Login with your Apple or Google account
+						Увійдіть через обліковий запис Apple або Google
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form>
+					<form onSubmit={handleSubmit}>
 						<FieldGroup>
-							<Field>
+							<Field className="grid grid-cols-2 gap-4">
 								<Button
 									variant="outline"
 									type="button"
+									onClick={() => signIn('apple', { callbackUrl: '/' })}
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -48,11 +85,12 @@ export function LoginForm({
 											fill="currentColor"
 										/>
 									</svg>
-									Login with Apple
+									Apple
 								</Button>
 								<Button
 									variant="outline"
 									type="button"
+									onClick={() => signIn('google', { callbackUrl: '/' })}
 								>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -63,16 +101,17 @@ export function LoginForm({
 											fill="currentColor"
 										/>
 									</svg>
-									Login with Google
+									Google
 								</Button>
 							</Field>
 							<FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
-								Or continue with
+								Або продовжити через
 							</FieldSeparator>
 							<Field>
-								<FieldLabel htmlFor="email">Email</FieldLabel>
+								<FieldLabel htmlFor="email">Електронна пошта</FieldLabel>
 								<Input
 									id="email"
+									name="email"
 									type="email"
 									placeholder="m@example.com"
 									required
@@ -80,34 +119,42 @@ export function LoginForm({
 							</Field>
 							<Field>
 								<div className="flex items-center">
-									<FieldLabel htmlFor="password">Password</FieldLabel>
+									<FieldLabel htmlFor="password">Пароль</FieldLabel>
 									<a
 										href="#"
 										className="ml-auto text-sm underline-offset-4 hover:underline"
 									>
-										Forgot your password?
+										Забули пароль?
 									</a>
 								</div>
 								<Input
 									id="password"
+									name="password"
 									type="password"
 									required
 								/>
 							</Field>
 							<Field>
-								<Button type="submit">Login</Button>
+								<Button
+									type="submit"
+									disabled={isLoading}
+								>
+									{isLoading ? 'Вхід...' : 'Увійти'}
+								</Button>
 								<FieldDescription className="text-center">
-									Don&apos;t have an account? <a href="/signup">Sign up</a>
+									Не маєте облікового запису?{' '}
+									<Link
+										href="/signup"
+										className="underline underline-offset-4"
+									>
+										Зареєструватися
+									</Link>
 								</FieldDescription>
 							</Field>
 						</FieldGroup>
 					</form>
 				</CardContent>
 			</Card>
-			<FieldDescription className="px-6 text-center">
-				By clicking continue, you agree to our <a href="#">Terms of Service</a>{' '}
-				and <a href="#">Privacy Policy</a>.
-			</FieldDescription>
 		</div>
 	)
 }

@@ -1,11 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  images: {
-    unoptimized: true,
-  },
+	typescript: {
+		ignoreBuildErrors: true
+	},
+	images: {
+		unoptimized: true
+	},
+	experimental: {
+		serverActions: {
+			bodySizeLimit: '10mb'
+		}
+	},
+	serverExternalPackages: ['@prisma/client']
 }
 
 export default nextConfig

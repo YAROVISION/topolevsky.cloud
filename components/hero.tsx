@@ -3,13 +3,14 @@
 import { Button } from '@/components/ui/button'
 import { cubicBezier, motion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
+import Image from 'next/image'
 
 const avatars = [
 	'/professional-headshot-1.png',
-	'/professional-headshot-2.png',
+	'/professional-headshot-2.jpg',
 	'/professional-headshot-3.png',
-	'/professional-headshot-4.png',
-	'/professional-headshot-5.png'
+	'/professional-headshot-4.jpg',
+	'/professional-headshot-5.jpg'
 ]
 
 const textRevealVariants = {
@@ -42,7 +43,9 @@ export function Hero() {
 					className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-900 border border-zinc-800 mb-8"
 				>
 					<span className="w-2 h-2 rounded-full bg-emerald-500 pulse-glow" />
-					<span className="text-sm text-zinc-400">Now in Public Beta</span>
+					<span className="text-sm text-zinc-400">
+						Публічне бета-тестування
+					</span>
 				</motion.div>
 
 				{/* Headline with text mask animation */}
@@ -58,7 +61,7 @@ export function Hero() {
 							animate="visible"
 							custom={0}
 						>
-							Ship faster.
+							Логіка мови -
 						</motion.span>
 					</span>
 					<span className="block overflow-hidden">
@@ -69,7 +72,7 @@ export function Hero() {
 							animate="visible"
 							custom={1}
 						>
-							Scale smarter.
+							шлях до правди.
 						</motion.span>
 					</span>
 				</h1>
@@ -81,8 +84,8 @@ export function Hero() {
 					transition={{ duration: 0.6, delay: 0.5 }}
 					className="text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto mb-10 leading-relaxed"
 				>
-					The modern platform for teams who ship fast. Built for scale, designed
-					for speed. Everything you need to build, deploy, and grow.
+					Логіка мови структурує думки, ведучи до правдивих висновків.
+					Застосовуючи логіку в міркуваннях, ти неминуче доходиш до істини.
 				</motion.p>
 
 				{/* CTAs */}
@@ -96,7 +99,7 @@ export function Hero() {
 						size="lg"
 						className="shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200 rounded-full px-8 h-12 text-base font-medium shadow-lg shadow-white/10"
 					>
-						Start Building
+						Розпочати
 						<ArrowRight className="ml-2 w-4 h-4" />
 					</Button>
 					<Button
@@ -104,7 +107,7 @@ export function Hero() {
 						size="lg"
 						className="rounded-full px-8 h-12 text-base font-medium border-zinc-800 text-zinc-300 hover:bg-zinc-900 hover:text-white hover:border-zinc-700 bg-transparent"
 					>
-						View Demo
+						Демонстрація
 					</Button>
 				</motion.div>
 
@@ -124,17 +127,21 @@ export function Hero() {
 								transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
 								className="relative"
 							>
-								<img
-									src={avatar || '/placeholder.svg'}
-									alt=""
+								<Image
+									src={avatar}
+									alt={`Avatar ${index + 1}`}
+									width={40}
+									height={40}
 									className="w-10 h-10 rounded-full border-2 border-zinc-950 object-cover"
+									priority={index < 3}
 								/>
 							</motion.div>
 						))}
 					</div>
 					<p className="text-sm text-zinc-500">
-						Trusted by <span className="text-zinc-300 font-medium">2,000+</span>{' '}
-						teams worldwide
+						Українську мову знають{' '}
+						<span className="text-zinc-300 font-medium">40 000 000 +</span>{' '}
+						людей у світі
 					</p>
 				</motion.div>
 			</div>

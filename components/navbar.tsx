@@ -1,9 +1,29 @@
 'use client'
 
+import { Logo } from '@/components/logo'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
+import { signOut, useSession } from 'next-auth/react'
+import Link from 'next/link'
 import { useRef, useState } from 'react'
+
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuGroup,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+
+import {
+	Avatar,
+	AvatarBadge,
+	AvatarFallback,
+	AvatarImage
+} from '@/components/ui/avatar'
 
 const navItems = [
 	{ label: 'Словники', href: '/features' },
@@ -16,6 +36,9 @@ export function Navbar() {
 	const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 	const navRef = useRef<HTMLDivElement>(null)
+	const session = useSession()
+
+	console.log('User session:', session)
 
 	return (
 		<motion.header
@@ -29,16 +52,7 @@ export function Navbar() {
 				className="relative flex items-center justify-between px-4 py-3 rounded-full bg-zinc-900/40 backdrop-blur-md border border-zinc-800"
 			>
 				{/* Logo */}
-				<a
-					href="/"
-					className="flex items-center gap-2"
-				>
-					<div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
-						<span className="text-zinc-950 font-bold text-sm">L</span>
-					</div>
-					<span className="font-semibold text-white hidden sm:block">Lexis</span>
-				</a>
-
+				<Logo />
 				{/* Desktop Nav Items */}
 				<div className="hidden md:flex items-center gap-1 relative">
 					{navItems.map((item, index) => (
@@ -61,26 +75,64 @@ export function Navbar() {
 						</a>
 					))}
 				</div>
-
 				{/* CTA Buttons */}
 				<div className="hidden md:flex items-center gap-3">
-					<a href="/login">
-						<Button
-							variant="ghost"
-							size="sm"
-							className="text-zinc-400 hover:text-white hover:bg-zinc-800"
-						>
-							Sign In
-						</Button>
-					</a>
+					{session.status === 'authenticated' ? (
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant="avatar">
+									<Avatar>
+										<AvatarImage
+											src={
+												session.data?.user?.image ||
+												'https://github.com/shadcn.png'
+											}
+											alt={session.data?.user?.name || '@shadcn'}
+										/>
+
+										<AvatarFallback>
+											{session.data?.user?.name
+												?.substring(0, 2)
+												.toUpperCase() || 'CN'}
+										</AvatarFallback>
+										<AvatarBadge className="bg-green-600 dark:bg-green-800" />
+									</Avatar>
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent>
+								<DropdownMenuGroup>
+									<DropdownMenuLabel className="text-emerald-400">
+										{session.data?.user?.name}
+									</DropdownMenuLabel>
+									<DropdownMenuItem asChild>
+										<Link href="/profile">Профайл</Link>
+									</DropdownMenuItem>
+								</DropdownMenuGroup>
+								<DropdownMenuSeparator />
+								<DropdownMenuItem onClick={() => signOut({ callbackUrl: '/' })}>
+									Вихід
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					) : (
+						<a href="/api/auth/signin">
+							<Button
+								variant="ghost"
+								size="sm"
+								className="text-zinc-400 hover:text-white hover:bg-zinc-800"
+							>
+								Вхід
+							</Button>
+						</a>
+					)}
+
 					<Button
 						size="sm"
 						className="shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200 rounded-full px-4"
 					>
-						Get Started
+						Розпочати
 					</Button>
 				</div>
-
 				{/* Mobile Menu Button */}
 				<button
 					className="md:hidden p-2 text-zinc-400 hover:text-white"
@@ -116,11 +168,11 @@ export function Navbar() {
 								variant="ghost"
 								className="justify-start text-zinc-400 hover:text-white"
 							>
-								Sign In
+								Вхід
 							</Button>
 						</a>
 						<Button className="shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200 rounded-full">
-							Get Started
+							Розпочати
 						</Button>
 					</div>
 				</motion.div>

@@ -1,6 +1,7 @@
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import * as React from 'react'
+import { Suspense } from 'react'
 
 import { SearchForm } from '@/components/search-form'
 import {
@@ -21,6 +22,7 @@ import {
 	SidebarRail
 } from '@/components/ui/sidebar'
 import { VersionSwitcher } from '@/components/version-switcher'
+import { Logo } from './logo'
 
 // This is sample data.
 export const data = {
@@ -194,23 +196,17 @@ export const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	return (
-		<Sidebar {...props} >
+		<Sidebar {...props}>
 			<SidebarHeader>
 				{/* Logo */}
-				<a
-					href="/"
-					className="flex items-center gap-2"
-				>
-					<div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center ml-2">
-						<span className="text-zinc-950 font-bold text-sm">L</span>
-					</div>
-					<span className="font-semibold text-white hidden sm:block">Lexis</span>
-				</a>
+				<Logo />
 				<VersionSwitcher
 					versions={data.versions}
 					defaultVersion={data.versions[0]}
 				/>
-				<SearchForm />
+				<Suspense fallback={null}>
+					<SearchForm />
+				</Suspense>
 			</SidebarHeader>
 			<SidebarContent className="gap-0">
 				{/* We create a collapsible SidebarGroup for each parent. */}
@@ -240,7 +236,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 													asChild
 													isActive={item.isActive}
 												>
-													<Link href={`?parent=${encodeURIComponent(group.title)}&title=${encodeURIComponent(item.title)}`}>{item.title}</Link>
+													<Link
+														href={`?parent=${encodeURIComponent(group.title)}&title=${encodeURIComponent(item.title)}`}
+													>
+														{item.title}
+													</Link>
 												</SidebarMenuButton>
 											</SidebarMenuItem>
 										))}
