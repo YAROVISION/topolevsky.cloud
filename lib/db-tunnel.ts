@@ -75,6 +75,9 @@ function spawnTunnel(): void {
 }
 
 export async function ensureTunnel(): Promise<void> {
+	if (process.env.NODE_ENV === 'production') {
+		return
+	}
 	// Already verified ready and port is up
 	if (tunnelReady) {
 		const up = await checkPort()

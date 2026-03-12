@@ -42,13 +42,14 @@ async function queryDB(search: string): Promise<{
 	}
 } | null> {
 	await ensureTunnel()
+	const isProd = process.env.NODE_ENV === 'production'
 	const connection = await withTimeout(
 		mysql.createConnection({
-			host: '127.0.0.1',
+			host: isProd ? process.env.DB_HOST : '127.0.0.1',
 			user: process.env.DB_USER,
 			password: process.env.DB_PASS,
 			database: process.env.DB_NAME,
-			port: 3307,
+			port: isProd ? 3306 : 3307,
 			connectTimeout: 4000
 		}),
 		5000
@@ -122,13 +123,14 @@ async function queryDB(search: string): Promise<{
 
 async function getLevelNames(): Promise<Record<number, string>> {
 	await ensureTunnel()
+	const isProd = process.env.NODE_ENV === 'production'
 	const connection = await withTimeout(
 		mysql.createConnection({
-			host: '127.0.0.1',
+			host: isProd ? process.env.DB_HOST : '127.0.0.1',
 			user: process.env.DB_USER,
 			password: process.env.DB_PASS,
 			database: process.env.DB_NAME,
-			port: 3307,
+			port: isProd ? 3306 : 3307,
 			connectTimeout: 4000
 		}),
 		5000
@@ -152,13 +154,14 @@ async function getLevelNames(): Promise<Record<number, string>> {
 
 async function saveToDB(word: string, aiData: AICategorization): Promise<void> {
 	await ensureTunnel()
+	const isProd = process.env.NODE_ENV === 'production'
 	const connection = await withTimeout(
 		mysql.createConnection({
-			host: '127.0.0.1',
+			host: isProd ? process.env.DB_HOST : '127.0.0.1',
 			user: process.env.DB_USER,
 			password: process.env.DB_PASS,
 			database: process.env.DB_NAME,
-			port: 3307,
+			port: isProd ? 3306 : 3307,
 			connectTimeout: 4000
 		}),
 		15000
