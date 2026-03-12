@@ -58,7 +58,8 @@ export async function POST(req: NextRequest) {
 		}
 
 		const mail = {
-			from: `${name} <${email}>`,
+			from: `"${name}" <${smtpUser}>`, // Send from authorized SMTP user
+			replyTo: email, // Set user's email as reply-to
 			to: ADMIN_EMAIL,
 			subject: `[Контакти] ${subject}`,
 			text: `Надіслано з форми контакти
@@ -88,6 +89,7 @@ ${message}
 
 		return NextResponse.json({ message: 'Повідомлення надіслано.', previewUrl })
 	} catch (err: any) {
+		console.error('Contact form error:', err)
 		// keep error message generic for security
 		return NextResponse.json(
 			{ error: 'Internal server error' },

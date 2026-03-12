@@ -15,7 +15,7 @@ const footerLinks = {
 	],
 	Компанія: [
 		{ label: 'Контакти', href: '/contact' },
-		{ label: 'Безпека', href: '/security' }
+		{ label: 'Підтримка', href: '/support' }
 	],
 	// For 'Права' we provide explicit hrefs so 'Конфіденційність' points to a real page
 	Права: [

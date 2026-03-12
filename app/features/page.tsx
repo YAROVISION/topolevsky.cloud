@@ -1,23 +1,14 @@
-import { AppSidebar, data } from '@/components/app-sidebar'
+import { data } from '@/components/app-sidebar'
 import { Footer } from '@/components/footer'
+import { NavBreadcrumb } from '@/components/nav-breadcrumb'
+import { Navbar } from '@/components/navbar'
+import { SearchForm } from '@/components/search-form'
 import { SmoothScroll } from '@/components/smooth-scroll'
-import {
-	Breadcrumb,
-	BreadcrumbItem,
-	BreadcrumbLink,
-	BreadcrumbList,
-	BreadcrumbPage,
-	BreadcrumbSeparator
-} from '@/components/ui/breadcrumb'
-import { Separator } from '@/components/ui/separator'
-import {
-	SidebarInset,
-	SidebarProvider,
-	SidebarTrigger
-} from '@/components/ui/sidebar'
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { AICategorization, categorizeWord } from '@/lib/ai'
 import { ensureTunnel } from '@/lib/db-tunnel'
 import mysql from 'mysql2/promise'
+import { Suspense } from 'react'
 import { SearchToast } from '../../components/search-toast'
 
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
@@ -33,6 +24,22 @@ async function queryDB(search: string): Promise<{
 	word: string
 	level: number
 	relations: { word: string; level: number }[]
+	properties?: {
+		part_of_language: string
+		creature: string
+		genus: string
+		number: string
+		person: string
+		case: string
+		verb_kind: string
+		dievidmina: string
+		class: string
+		sub_role: string
+		comparison: string
+		tense: string
+		mood: string
+		variation: string
+	}
 } | null> {
 	await ensureTunnel()
 	const connection = await withTimeout(
@@ -49,7 +56,15 @@ async function queryDB(search: string): Promise<{
 	try {
 		// Шукаємо слово. Спершу пробуємо знайти те, де вже є рівень, або просто будь-яке співпадіння.
 		const [rows] = await connection.execute<any[]>(
-			'SELECT id, word, abstraction_level FROM word WHERE word = ? ORDER BY abstraction_level DESC LIMIT 1',
+			`SELECT 
+				id, word, abstraction_level,
+				part_of_language, creature, genus, number, person, 
+				kind as 'case', verb_kind, dievidmina, class, 
+				sub_role, comparison, tense, mood, variation
+			 FROM word 
+			 WHERE word = ? 
+			 ORDER BY abstraction_level DESC 
+			 LIMIT 1`,
 			[search]
 		)
 
@@ -80,10 +95,56 @@ async function queryDB(search: string): Promise<{
 				relations: relRows.map(r => ({
 					word: r.word,
 					level: r.abstraction_level
-				}))
+				})),
+				properties: {
+					part_of_language: mainWord.part_of_language,
+					creature: mainWord.creature,
+					genus: mainWord.genus,
+					number: mainWord.number,
+					person: mainWord.person,
+					case: mainWord.case,
+					verb_kind: mainWord.verb_kind,
+					dievidmina: mainWord.dievidmina,
+					class: mainWord.class,
+					sub_role: mainWord.sub_role,
+					comparison: mainWord.comparison,
+					tense: mainWord.tense,
+					mood: mainWord.mood,
+					variation: mainWord.variation
+				}
 			}
 		}
 		return null
+	} finally {
+		await connection.end().catch(() => {})
+	}
+}
+
+async function getLevelNames(): Promise<Record<number, string>> {
+	await ensureTunnel()
+	const connection = await withTimeout(
+		mysql.createConnection({
+			host: '127.0.0.1',
+			user: process.env.DB_USER,
+			password: process.env.DB_PASS,
+			database: process.env.DB_NAME,
+			port: 3307,
+			connectTimeout: 4000
+		}),
+		5000
+	)
+	try {
+		const [rows] = await connection.execute<any[]>(
+			'SELECT level, level_name_ua FROM abstraction_levels'
+		)
+		const mapping: Record<number, string> = {}
+		rows.forEach(row => {
+			mapping[row.level] = row.level_name_ua
+		})
+		return mapping
+	} catch (err) {
+		console.error('Error fetching level names:', err)
+		return {}
 	} finally {
 		await connection.end().catch(() => {})
 	}
@@ -191,10 +252,28 @@ export default async function Features(props: Props) {
 	const search =
 		typeof searchParams.search === 'string' ? searchParams.search : undefined
 
+	const levelNames = await getLevelNames()
+
 	let searchResult: {
 		word: string
 		level: number
 		relations: { word: string; level: number }[]
+		properties?: {
+			part_of_language: string
+			creature: string
+			genus: string
+			number: string
+			person: string
+			case: string
+			verb_kind: string
+			dievidmina: string
+			class: string
+			sub_role: string
+			comparison: string
+			tense: string
+			mood: string
+			variation: string
+		}
 	} | null = null
 	let searchError = false
 
@@ -273,62 +352,153 @@ export default async function Features(props: Props) {
 	return (
 		<SmoothScroll>
 			<main className="min-h-screen">
-				{/* <Navbar /> */}
+				<Navbar />
 
-				<SidebarProvider>
-					<AppSidebar />
+				<SidebarProvider
+					defaultOpen={false}
+					className="pt-20"
+				>
+					{/* <AppSidebar /> */}
 					<SidebarInset>
 						<header className="bg-background sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b px-4">
-							<SidebarTrigger className="-ml-1" />
-							<Separator
-								orientation="vertical"
-								className="mr-2 h-4"
+							{/* <SidebarTrigger className="-ml-1" /> */}
+							<NavBreadcrumb
+								parent={parent}
+								title={title}
 							/>
-							<Breadcrumb>
-								<BreadcrumbList>
-									<BreadcrumbItem className="hidden md:block">
-										<BreadcrumbLink href="#">{parent}</BreadcrumbLink>
-									</BreadcrumbItem>
-									<BreadcrumbSeparator className="hidden md:block" />
-									<BreadcrumbItem>
-										<BreadcrumbPage>{title}</BreadcrumbPage>
-									</BreadcrumbItem>
-								</BreadcrumbList>
-							</Breadcrumb>
+							<div className="ml-auto flex items-center gap-2">
+								<Suspense fallback={null}>
+									<SearchForm className="w-full max-w-75" />
+								</Suspense>
+							</div>
 						</header>
-						<div className="flex flex-1 flex-col gap-4 p-4">
-							{items.map((item, index) => (
+						<div className="grid grid-cols-1 xl:grid-cols-2 gap-4 p-4">
+							{[
+								items.slice(0, Math.ceil(items.length / 2)),
+								items.slice(Math.ceil(items.length / 2))
+							].map((columnItems, colIndex) => (
 								<div
-									key={index}
-									className="bg-muted/50 min-h-12 w-full rounded-lg p-4 font-medium"
+									key={colIndex}
+									className="flex flex-col gap-4"
 								>
-									<span className="text-sidebar-primary font-semibold">
-										{item.title}
-									</span>
-									<div className="ml-2 inline-flex flex-wrap gap-2">
-										{categoryWords[item.title] &&
-										categoryWords[item.title].length > 0 ? (
-											categoryWords[item.title].map((wordObj, i) => (
-												<span
-													key={i}
-													className={
-														wordObj.isMain
-															? 'text-green-500 font-bold'
-															: 'text-foreground'
-													}
-												>
-													{wordObj.word}
-													{i < categoryWords[item.title].length - 1 && (
-														<span className="text-foreground/30 ml-2">•</span>
+									{columnItems.map((item, index) => {
+										const levelMatch = item.title.match(/\d+/)
+										const levelNum = levelMatch ? parseInt(levelMatch[0]) : null
+										const levelNameUa = levelNum ? levelNames[levelNum] : null
+
+										return (
+											<div
+												key={index}
+												className="bg-muted/50 min-h-12 w-full rounded-lg p-4 font-medium"
+											>
+												<div className="flex flex-col gap-1 mb-2">
+													<span className="text-sidebar-primary font-semibold">
+														{item.title}
+													</span>
+													{levelNameUa && (
+														<span className="text-xs text-muted-foreground italic">
+															{levelNameUa}
+														</span>
 													)}
-												</span>
-											))
-										) : (
-											<span className="text-foreground/50">пусто</span>
-										)}
-									</div>
+												</div>
+												<div className="ml-2 inline-flex flex-wrap gap-2">
+													{categoryWords[item.title] &&
+													categoryWords[item.title].length > 0 ? (
+														categoryWords[item.title].map((wordObj, i) => (
+															<span
+																key={i}
+																className={
+																	wordObj.isMain
+																		? 'text-green-500 font-bold'
+																		: 'text-foreground'
+																}
+															>
+																{wordObj.word}
+																{i < categoryWords[item.title].length - 1 && (
+																	<span className="text-foreground/30 ml-2">
+																		•
+																	</span>
+																)}
+															</span>
+														))
+													) : (
+														<span className="text-foreground/50">пусто</span>
+													)}
+												</div>
+											</div>
+										)
+									})}
 								</div>
 							))}
+						</div>
+						<div className="p-4 pt-0">
+							<div className="bg-muted/50 min-h-12 w-full rounded-lg p-4 font-medium">
+								<span className="text-sidebar-primary font-semibold block mb-2">
+									Морфологічний розбір слова
+								</span>
+								<div className="text-foreground">
+									{search ? (
+										<div className="flex flex-col gap-4">
+											<div className="flex flex-col gap-1">
+												<span className="text-2xl font-bold">{search}</span>
+												{searchResult?.properties?.part_of_language &&
+													searchResult.properties.part_of_language !== '-' && (
+														<span className="text-sidebar-primary font-medium italic">
+															{searchResult.properties.part_of_language}
+														</span>
+													)}
+											</div>
+
+											{searchResult?.properties && (
+												<div className="grid grid-cols-2 md:grid-cols-3 gap-y-3 gap-x-6 text-sm">
+													{Object.entries(searchResult.properties)
+														.filter(([key, value]) => key !== 'part_of_language' && value && value !== '-')
+														.map(([key, value]) => {
+															const labels: Record<string, string> = {
+																creature: 'Істота/неістота',
+																genus: 'Рід',
+																number: 'Число',
+																person: 'Особа',
+																case: 'Відмінок',
+																verb_kind: 'Вид дієслова',
+																dievidmina: 'Дієвідміна',
+																class: 'Розряд',
+																sub_role: 'Роль',
+																comparison: 'Ступінь порівняння',
+																tense: 'Час',
+																mood: 'Спосіб',
+																variation: 'Відміна'
+															}
+															return (
+																<div
+																	key={key}
+																	className="flex flex-col gap-0.5"
+																>
+																	<span className="text-muted-foreground text-[10px] uppercase tracking-wider font-bold">
+																		{labels[key] || key}
+																	</span>
+																	<span className="text-foreground">{value}</span>
+																</div>
+															)
+														})}
+												</div>
+											)}
+											{!searchResult?.properties && searchResult && (
+												<span className="text-muted-foreground text-sm italic">
+													Детальні властивості не знайдені в БД...
+												</span>
+											)}
+											{!searchResult && (
+												<span className="text-muted-foreground text-sm italic">
+													Тут буде відображено морфологічний розбір...
+												</span>
+											)}
+										</div>
+									) : (
+										"Тут буде відображено морфологічний розбір..."
+									)}
+								</div>
+							</div>
 						</div>
 					</SidebarInset>
 				</SidebarProvider>

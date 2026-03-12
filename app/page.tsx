@@ -4,6 +4,7 @@ import { Footer } from '@/components/footer'
 import { Hero } from '@/components/hero'
 import { LogoMarquee } from '@/components/logo-marquee'
 import { Navbar } from '@/components/navbar'
+import { Pricing } from '@/components/pricing'
 import { SmoothScroll } from '@/components/smooth-scroll'
 
 export default function Home() {
@@ -14,7 +15,7 @@ export default function Home() {
 				<Hero />
 				<LogoMarquee />
 				<BentoGrid />
-				{/* <Pricing /> */}
+				<Pricing />
 				<FinalCTA />
 				<Footer />
 			</main>

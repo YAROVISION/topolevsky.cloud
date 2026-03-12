@@ -1,9 +1,7 @@
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import * as React from 'react'
-import { Suspense } from 'react'
 
-import { SearchForm } from '@/components/search-form'
 import {
 	Collapsible,
 	CollapsibleContent,
@@ -124,72 +122,6 @@ export const data = {
 					url: '#'
 				}
 			]
-		},
-		{
-			title: 'API Reference',
-			url: '#',
-			items: [
-				{
-					title: 'Components',
-					url: '#'
-				},
-				{
-					title: 'File Conventions',
-					url: '#'
-				},
-				{
-					title: 'Functions',
-					url: '#'
-				},
-				{
-					title: 'next.config.js Options',
-					url: '#'
-				},
-				{
-					title: 'CLI',
-					url: '#'
-				},
-				{
-					title: 'Edge Runtime',
-					url: '#'
-				}
-			]
-		},
-		{
-			title: 'Architecture',
-			url: '#',
-			items: [
-				{
-					title: 'Accessibility',
-					url: '#'
-				},
-				{
-					title: 'Fast Refresh',
-					url: '#'
-				},
-				{
-					title: 'Next.js Compiler',
-					url: '#'
-				},
-				{
-					title: 'Supported Browsers',
-					url: '#'
-				},
-				{
-					title: 'Turbopack',
-					url: '#'
-				}
-			]
-		},
-		{
-			title: 'Community',
-			url: '#',
-			items: [
-				{
-					title: 'Contribution Guide',
-					url: '#'
-				}
-			]
 		}
 	]
 }
@@ -204,9 +136,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					versions={data.versions}
 					defaultVersion={data.versions[0]}
 				/>
-				<Suspense fallback={null}>
-					<SearchForm />
-				</Suspense>
 			</SidebarHeader>
 			<SidebarContent className="gap-0">
 				{/* We create a collapsible SidebarGroup for each parent. */}

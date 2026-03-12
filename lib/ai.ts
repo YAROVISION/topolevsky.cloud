@@ -21,10 +21,14 @@ export async function categorizeWord(
 		return null
 	}
 
-	try {
-		const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' })
+	const maxRetries = 3
+	let lastError: any = null
 
-		const prompt = `Визнач рівень абстракції для слова "${word}" за шкалою від 1 до 10, використовуючи наступні визначення категорій:
+	for (let attempt = 1; attempt <= maxRetries; attempt++) {
+		try {
+			const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' })
+
+			const prompt = `Визнач рівень абстракції для слова "${word}" за шкалою від 1 до 10, використовуючи наступні визначення категорій:
 
 1. Філософські поняття: Максимально абстрактні поняття, неможливо побачити або доторкнутися (наприклад: буття, сутність, істина, добро, час).
 2. Емоції та якості: Внутрішні стани, почуття, якості характеру (наприклад: любов, щастя, справедливість, мудрість, краса).
@@ -46,33 +50,41 @@ export async function categorizeWord(
   "hyponyms": [{"word": "слово1", "level": 10}]
 }`
 
-		const result = await model.generateContent(prompt)
-		const response = await result.response
-		const text = response
-			.text()
-			.trim()
-			.replace(/```json|```/g, '')
+			const result = await model.generateContent(prompt)
+			const response = await result.response
+			const text = response
+				.text()
+				.trim()
+				.replace(/```json|```/g, '')
 
-		try {
-			const data = JSON.parse(text)
-			if (
-				typeof data.level === 'number' &&
-				data.level >= 1 &&
-				data.level <= 10
-			) {
-				return {
-					level: data.level,
-					hypernyms: Array.isArray(data.hypernyms) ? data.hypernyms : [],
-					hyponyms: Array.isArray(data.hyponyms) ? data.hyponyms : []
+			try {
+				const data = JSON.parse(text)
+				if (
+					typeof data.level === 'number' &&
+					data.level >= 1 &&
+					data.level <= 10
+				) {
+					return {
+						level: data.level,
+						hypernyms: Array.isArray(data.hypernyms) ? data.hypernyms : [],
+						hyponyms: Array.isArray(data.hyponyms) ? data.hyponyms : []
+					}
 				}
+			} catch (e) {
+				console.error(`Attempt ${attempt}: Failed to parse AI response:`, text)
 			}
-		} catch (e) {
-			console.error('Failed to parse AI response as JSON:', text)
+		} catch (error: any) {
+			lastError = error
+			console.error(`Attempt ${attempt}: Error in categorizeWord:`, error.message || error)
+			
+			// If it's a 503 or 429, wait before retrying
+			if (attempt < maxRetries) {
+				const delay = attempt * 1000 // Exponential backoff (1s, 2s)
+				await new Promise(resolve => setTimeout(resolve, delay))
+			}
 		}
-
-		return null
-	} catch (error) {
-		console.error('Error in categorizeWord:', error)
-		return null
 	}
+
+	console.error('All AI retry attempts failed.', lastError)
+	return null
 }
