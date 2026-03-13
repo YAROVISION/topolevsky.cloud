@@ -1,9 +1,9 @@
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import type { AuthOptions } from 'next-auth'
+import AppleProvider from 'next-auth/providers/apple'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
-import AppleProvider from 'next-auth/providers/apple'
 export const authConfig: AuthOptions = {
 	providers: [
 		GoogleProvider({

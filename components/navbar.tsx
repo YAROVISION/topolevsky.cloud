@@ -90,67 +90,69 @@ export function Navbar() {
 						)
 					})}
 				</div>
-				{/* CTA Buttons */}
-				<div className="hidden md:flex items-center gap-3">
-					{session.status === 'authenticated' ? (
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button variant="avatar">
-									<Avatar>
-										<AvatarImage
-											src={
-												session.data?.user?.image ||
-												'https://github.com/shadcn.png'
-											}
-											alt={session.data?.user?.name || '@shadcn'}
-										/>
+				<div className="flex items-center gap-2 md:gap-3">
+					{/* CTA Buttons */}
+					<div className="flex items-center gap-3">
+						{session.status === 'authenticated' ? (
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button variant="avatar">
+										<Avatar>
+											<AvatarImage
+												src={
+													session.data?.user?.image ||
+													'https://github.com/shadcn.png'
+												}
+												alt={session.data?.user?.name || '@shadcn'}
+											/>
 
-										<AvatarFallback>
-											{session.data?.user?.name
-												?.substring(0, 2)
-												.toUpperCase() || 'CN'}
-										</AvatarFallback>
-										<AvatarBadge className="bg-green-600 dark:bg-green-800" />
-									</Avatar>
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent>
-								<DropdownMenuGroup>
-									<DropdownMenuLabel className="text-emerald-400">
-										{session.data?.user?.name}
-									</DropdownMenuLabel>
-									<DropdownMenuItem asChild>
-										<Link href="/profile">Профайл</Link>
+											<AvatarFallback>
+												{session.data?.user?.name
+													?.substring(0, 2)
+													.toUpperCase() || 'CN'}
+											</AvatarFallback>
+											<AvatarBadge className="bg-green-600 dark:bg-green-800" />
+										</Avatar>
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent>
+									<DropdownMenuGroup>
+										<DropdownMenuLabel className="text-emerald-400">
+											{session.data?.user?.name}
+										</DropdownMenuLabel>
+										<DropdownMenuItem asChild>
+											<Link href="/profile">Профайл</Link>
+										</DropdownMenuItem>
+									</DropdownMenuGroup>
+									<DropdownMenuSeparator />
+									<DropdownMenuItem onClick={() => signOut({ callbackUrl: '/' })}>
+										Вихід
 									</DropdownMenuItem>
-								</DropdownMenuGroup>
-								<DropdownMenuSeparator />
-								<DropdownMenuItem onClick={() => signOut({ callbackUrl: '/' })}>
-									Вихід
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					) : (
-						<a href="/api/auth/signin">
-							<Button
-								variant="ghost"
-								size="sm"
-								className="text-zinc-400 hover:text-white hover:bg-zinc-800"
-							>
-								Вхід
-							</Button>
-						</a>
-					)}
+								</DropdownMenuContent>
+							</DropdownMenu>
+						) : (
+							<a href="/api/auth/signin">
+								<Button
+									variant="ghost"
+									size="sm"
+									className="text-zinc-400 hover:text-white hover:bg-zinc-800"
+								>
+									Вхід
+								</Button>
+							</a>
+						)}
 
-					{/* 'Розпочати' button removed as requested */}
+						{/* 'Розпочати' button removed as requested */}
+					</div>
+					{/* Mobile Menu Button */}
+					<button
+						className="md:hidden p-2 text-zinc-400 hover:text-white"
+						onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+						aria-label="Toggle menu"
+					>
+						{mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+					</button>
 				</div>
-				{/* Mobile Menu Button */}
-				<button
-					className="md:hidden p-2 text-zinc-400 hover:text-white"
-					onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-					aria-label="Toggle menu"
-				>
-					{mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-				</button>
 			</nav>
 
 			{/* Mobile Menu */}
@@ -172,15 +174,6 @@ export function Navbar() {
 								{item.label}
 							</a>
 						))}
-						<hr className="border-zinc-800 my-2" />
-						<a href="/login">
-							<Button
-								variant="ghost"
-								className="justify-start text-zinc-400 hover:text-white"
-							>
-								Вхід
-							</Button>
-						</a>
 						{/* 'Розпочати' button removed from mobile menu as requested */}
 					</div>
 				</motion.div>
