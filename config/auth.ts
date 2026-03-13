@@ -1,9 +1,10 @@
-import { prisma } from '@/lib/prisma'
+import { userQuery } from '@/lib/users-db'
 import bcrypt from 'bcryptjs'
 import type { AuthOptions } from 'next-auth'
 import AppleProvider from 'next-auth/providers/apple'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
+
 export const authConfig: AuthOptions = {
 	providers: [
 		GoogleProvider({
@@ -25,9 +26,11 @@ export const authConfig: AuthOptions = {
 					return null
 				}
 
-				const user = await prisma.user.findUnique({
-					where: { email: credentials.email }
-				})
+				const rows = await userQuery<any>(
+					'SELECT id, email, name, phone, avatarUrl, password FROM users WHERE email = ? LIMIT 1',
+					[credentials.email]
+				)
+				const user = rows[0]
 
 				if (!user || !user.password) {
 					return null
@@ -68,10 +71,11 @@ export const authConfig: AuthOptions = {
 
 			// Оновлюємо дані з бази, якщо це необхідно (наприклад, для Google входу)
 			if (!token.phone && token.email) {
-				const dbUser = await prisma.user.findUnique({
-					where: { email: token.email },
-					select: { phone: true, id: true, avatarUrl: true }
-				})
+				const rows = await userQuery<any>(
+					'SELECT id, phone, avatarUrl FROM users WHERE email = ? LIMIT 1',
+					[token.email]
+				)
+				const dbUser = rows[0]
 				if (dbUser) {
 					token.id = dbUser.id
 					token.phone = dbUser.phone

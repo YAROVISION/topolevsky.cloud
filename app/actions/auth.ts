@@ -1,7 +1,8 @@
 'use server'
 
-import { prisma } from '@/lib/prisma'
+import { userQuery } from '@/lib/users-db'
 import bcrypt from 'bcryptjs'
+import { randomUUID } from 'crypto'
 import fs from 'fs/promises'
 import path from 'path'
 import { z } from 'zod'
@@ -35,24 +36,24 @@ export async function signup(formData: FormData) {
 	}
 
 	try {
-		const existingUser = await prisma.user.findUnique({
-			where: { email }
-		})
+		const existing = await userQuery<any>(
+			'SELECT id FROM users WHERE email = ? LIMIT 1',
+			[email]
+		)
 
-		if (existingUser) {
+		if (existing.length > 0) {
 			return {
 				error: { email: ['Користувач з такою електронною поштою вже існує'] }
 			}
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 10)
+		const id = randomUUID()
 
-		await prisma.user.create({
-			data: {
-				email,
-				password: hashedPassword
-			}
-		})
+		await userQuery(
+			'INSERT INTO users (id, email, password, role, isActive, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, NOW(), NOW())',
+			[id, email, hashedPassword, 'CLIENT', 1]
+		)
 
 		return { success: true }
 	} catch (error) {
@@ -91,21 +92,13 @@ export async function updateProfile(userId: string, formData: FormData) {
 	}
 
 	try {
-		const updateData: any = {
-			name,
-			phone
-		}
+		let avatarUrl: string | null = null
 
-		if (password && password.length >= 8) {
-			updateData.password = await bcrypt.hash(password, 10)
-		}
-
-		// Handle avatar file upload (save to public/uploads and store URL)
+		// Handle avatar file upload
 		const avatarFile = formData.get('avatar') as File | null
 		if (avatarFile && (avatarFile as any).size) {
 			const size = (avatarFile as any).size as number
 			const type = (avatarFile as any).type as string
-			// Validate size (<= 2MB) and allowed MIME types
 			const MAX_BYTES = 2 * 1024 * 1024 // 2MB
 			const allowed = ['image/jpeg', 'image/png', 'image/webp']
 			if (size > MAX_BYTES) {
@@ -124,19 +117,41 @@ export async function updateProfile(userId: string, formData: FormData) {
 				const buffer = Buffer.from(await (avatarFile as File).arrayBuffer())
 				const filePath = path.join(uploadsDir, safeName)
 				await fs.writeFile(filePath, buffer)
-				updateData.avatarUrl = `/uploads/${safeName}`
+				avatarUrl = `/uploads/${safeName}`
 			} catch (err) {
 				console.error('Avatar upload error:', err)
 				return { error: { avatar: ['Не вдалося завантажити файл'] } }
 			}
 		}
 
-		const updated = await prisma.user.update({
-			where: { id: userId },
-			data: updateData
-		})
+		// Build UPDATE query dynamically
+		const fields: string[] = ['name = ?', 'phone = ?', 'updatedAt = NOW()']
+		const values: any[] = [name, phone || null]
 
-		return { success: true, avatarUrl: updated.avatarUrl }
+		if (password && password.length >= 8) {
+			fields.push('password = ?')
+			values.push(await bcrypt.hash(password, 10))
+		}
+
+		if (avatarUrl) {
+			fields.push('avatarUrl = ?')
+			values.push(avatarUrl)
+		}
+
+		values.push(userId)
+
+		await userQuery(
+			`UPDATE users SET ${fields.join(', ')} WHERE id = ?`,
+			values
+		)
+
+		// Fetch updated avatarUrl to return
+		const rows = await userQuery<any>(
+			'SELECT avatarUrl FROM users WHERE id = ? LIMIT 1',
+			[userId]
+		)
+
+		return { success: true, avatarUrl: rows[0]?.avatarUrl ?? null }
 	} catch (error) {
 		console.error('Update profile error:', error)
 		return {
