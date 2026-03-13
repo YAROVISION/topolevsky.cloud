@@ -11,7 +11,7 @@ const nextConfig = {
 			bodySizeLimit: '10mb'
 		}
 	},
-	serverExternalPackages: ['@prisma/client']
+	serverExternalPackages: ['@prisma/client', 'prisma', '@prisma/extension-accelerate', '.prisma/client']
 }
 
 export default nextConfig
