@@ -1,14 +1,12 @@
 'use server'
 
-import Anthropic from '@anthropic-ai/sdk'
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai'
 import fs from 'fs'
 import path from 'path'
 import { searchKcsDecisions as searchQdrant } from '@/lib/qdrant'
 import { createEmbedding } from '@/lib/embeddings'
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || ''
-})
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || process.env.GOOGLE_API_KEY || '')
 
 // Пошук релевантних рішень ККС через Qdrant
 async function searchKcsDecisions(text: string) {
@@ -29,8 +27,8 @@ export async function analyzeDocument(
     score: number
   }>
 }> {
-  if (!process.env.ANTHROPIC_API_KEY) {
-    throw new Error('ANTHROPIC_API_KEY is not set')
+  if (!process.env.GOOGLE_AI_API_KEY && !process.env.GOOGLE_API_KEY) {
+    throw new Error('GOOGLE_AI_API_KEY or GOOGLE_API_KEY is not set')
   }
 
   // Вибираємо відповідний промпт Lexis залежно від типу аналізу (для платних чи безкоштовних)
@@ -82,23 +80,36 @@ export async function analyzeDocument(
       : ''
 
   try {
-    const response = await client.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 4000,
-      system: systemPrompt,
-      messages: [
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-2.5-pro',
+      systemInstruction: systemPrompt + '\n\nТи — професійний юрист. Проведи логічний аналіз наступного судового вироку. Текст містить описи правопорушень, що є частиною справи. Працюй виключно в межах юридичного аналізу.',
+      safetySettings: [
         {
-          role: 'user',
-          content: `Проаналізуй наступний процесуальний документ кримінального провадження України:${typeHint}${kcsContext}\n\n---\n${text}\n---`
-        }
+          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+          threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+          threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+          threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+          threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
       ]
     })
 
+    const prompt = `Проаналізуй наступний процесуальний документ кримінального провадження України:${typeHint}${kcsContext}\n\n---\n${text}\n---`
+
+    const result = await model.generateContent(prompt)
+    const response = await result.response
+
     return {
-      analysis:
-        response.content[0].type === 'text'
-          ? response.content[0].text
-          : '',
+      analysis: response.text() || '',
       sources
     }
   } catch (error) {

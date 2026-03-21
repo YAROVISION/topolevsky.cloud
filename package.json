@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "concurrently --kill-others \"bash scripts/db-tunnel.sh\" \"next dev\"",
     "lint": "eslint .",
     "start": "next start"
   },
@@ -87,6 +87,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "baseline-browser-mapping": "^2.10.0",
+    "concurrently": "^9.2.1",
     "postcss": "^8.5",
     "prisma": "^5.22.0",
     "tailwindcss": "^4.1.9",
