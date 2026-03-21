@@ -1,0 +1,728 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="uk">
+
+<head>
+    <title>Єдиний державний реєстр судових рішень</title>
+    <link rel="shortcut icon" href="/Content/Images/favicon.ico" type="image/x-icon" />
+    <link href="/Content/Site.css" rel="stylesheet" type="text/css" />
+    <script src="/Scripts/all.min.js" type="text/javascript"></script>
+    <script src="/Scripts/Common.js?1" type="text/javascript"></script>
+    <script src="/Scripts/jquery.blockUI.js" type="text/javascript"></script>
+    <script src="/Scripts/jquery.multiSelect.js" type="text/javascript"></script>
+
+    <style type="text/css">
+        #modalcaptcha {
+            background-color: #F5F5F5;
+            border: 2px solid buttonshadow;
+            border-radius: 15px 15px 15px 15px;
+            font-family: "Times New Roman";
+            font-size: 15px;
+            margin: 0;
+            padding: 20px;
+            position: absolute;
+            z-index: 1;
+            display: inline;
+            left: 461.5px;
+            top: 192px;
+        }
+
+            #modalcaptcha button {
+                background-color: #F0F0F0;
+                border: 1px solid #AAAAAA;
+                border-radius: 12px 12px 12px 12px;
+                color: #393939;
+                font-size: 100%;
+                font-weight: bold;
+                height: 30px;
+                margin: 0 0 0 10px;
+                width: 150px;
+            }
+
+            #modalcaptcha .disabled {
+                color: #ddd;
+            }
+    </style>
+
+</head>
+<body style="visibility: hidden">
+    <div class="page">
+        <div id="content">
+            <div id="header">
+                <h1>Єдиний державний реєстр судових рішень</h1>
+                
+                <div class="warningblock">
+                <h4 class="warningtext">Доступ до Реєстру здійснюється в тестовому (обмеженому) режимі. Для запобігання загрозам життю і здоров'ю суддів та учасників судового процесу, а також у разі виявлення ознак кіберзагрози, доступ до Реєстру або окремих рішень у ньому може бути обмежено.</h4>
+                </div>
+                <div id="logon" class="notVisible">
+                    
+                    Ласкаво просимо, !
+                </div>
+
+                <div id="menucontainer">
+                    <table id="menu" cellpadding="0" cellspacing="0" style="text-align:center;">
+                        <tr>
+                            <td style="width: 69px; padding-left: 25px; vertical-align: middle;" class="staticTD">
+                                <img src="/Content/Images/trident2.PNG" title="Державний герб України" alt="Державний герб України" style="display: block" />
+                            </td>
+                            <td style="width: 89px">
+                                <a href="/" id="aSearch" name="aSearch">Головна</a>
+                            </td>
+                            <td style="width: 137px">
+                                <a href="/Law" id="aLaw" name="aLaw">Законодавство</a>
+                            </td>
+                            <td style="width: 96px">
+                                <a href="/Contacts" id="aContacts" name="aContacts">Контакти</a>
+                            </td>
+                            <td style="width: 91px">
+                                <a href="/Rules" id="aRules" name="aRules">Правила</a>
+                            </td>
+                            <td style="width: 100px">
+                                <a href="/Help" id="aHelp" name="aHelp">Допомога</a>
+                            </td>
+                            <td style="width: 200px">
+                                <a href="/ChangedNameCourts">Змінені назви судів</a>
+                            </td>
+                            <td style="width: 220px" class="staticTD">
+                            </td>
+                            
+                            <td style="width: 150px">
+
+<a href="/login" id="aLogin" name="aLogin">Повний доступ</a>                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div id="login">
+                
+
+<div id="divdocument">
+    <div id="divcasecat">
+        <table style="margin-bottom:10px;border-collapse: collapse; border-spacing: 0;" id="info">
+            <tr><td colspan="2" style="text-align:left;">Категорія&nbsp;справи № <b><form style="margin: 0; padding: 0; display:inline!important;" id="ree_doc" target="_blank" action="https://reyestr.court.gov.ua" accept-charset="utf-8" method="POST"><div style="display:none;"><input style="display: inline;" name="CaseNumber" value="1-177/11" type="text"><input style="display: inline;" name="PagingInfo.ItemsPerPage" value="25" type="text"><input style="display: inline;" name="Sort" value="1" type="text"></div><a style="display: inline;" id="tooltp" title="Натисніть для перегляду всіх судових рішень по справі" href="#">1-177/11</a></form>: Кримінальні справи (з 01.01.2019); Справи в порядку виконання судових рішень у кримінальних провадженнях; про установлення, припинення адміністративного нагляду.</b></td></tr>
+            <tr><td colspan="2" style="text-align:left;">Надіслано судом: <b>не визначено.</b> Зареєстровано: <b>02.04.2019.</b> Забезпечено надання загального доступу: <b>02.04.2019.</b></td></tr>
+            <tr><td colspan="2" style="text-align:left;">Дата набрання законної сили:&nbsp;<b>26.02.2019</b></td></tr>
+            <tr><td colspan="2" style="text-align:left;">Номер судового провадження: <b>51-4158км18</b></td></tr>
+            <tr><td colspan="2" style="text-align:left;">Номер кримінального провадження в ЄРДР: <b>не визначено</b></td></tr>
+        </table>
+    </div>
+    <div id="divprint">
+        <input type="button" id="btnPrint" name="btnPrint" value="Версія для друку"  />
+    </div>
+    <iframe id="divframe" name="divframe"></iframe>
+    <textarea id="txtdepository"><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//DE" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="generator" content="Rtf2Html Converter" />
+		<title>
+			Єдиний державний реєстр судових рішень
+		</title>
+	</head>
+	<body>
+		<p>&nbsp;</p>
+		<p><b><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:20pt;">УХВАЛА</span></b></p>
+		<p><b><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:20pt;">ІМЕНЕМ&nbsp;УКРАЇНи</span></b></p>
+		<p><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">26&nbsp;лютого&nbsp;2019&nbsp;року&nbsp;</span><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">м.&nbsp;Київ</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">справа&nbsp;№&nbsp;1-177/11</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">провадження&nbsp;№&nbsp;51-4158км18</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">Верховний&nbsp;Суд&nbsp;колегією&nbsp;суддів&nbsp;Першої&nbsp;судової&nbsp;палатиКасаційного&nbsp;кримінального&nbsp;суду&nbsp;у&nbsp;складі:</span></p>
+		<p><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">головуючого</span><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;ОСОБА_1&nbsp;,</span></p>
+		<p><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">суддів</span><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">&nbsp;ОСОБА_2&nbsp;,&nbsp;ОСОБА_3&nbsp;,</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">за&nbsp;участю:</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">ОСОБА_4&nbsp;,</span></p>
+		<p><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">виправданого&nbsp;ОСОБА_5&nbsp;,</span></p>
+		<p><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">ОСОБА_6&nbsp;,</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">розглянув&nbsp;у&nbsp;відкритому&nbsp;судовому&nbsp;засіданні&nbsp;кримінальну&nbsp;справу&nbsp;за&nbsp;касаційними&nbsp;скаргами&nbsp;прокурора&nbsp;ОСОБА_7&nbsp;,&nbsp;яка&nbsp;брала&nbsp;участь&nbsp;у&nbsp;розгляді&nbsp;справи&nbsp;судом&nbsp;апеляційної&nbsp;інстанції,&nbsp;потерпілої&nbsp;ОСОБА_8&nbsp;та&nbsp;представника&nbsp;потерпілої&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">&nbsp;адвоката&nbsp;ОСОБА_9&nbsp;на&nbsp;вирок&nbsp;Придніпровського&nbsp;районного&nbsp;суду&nbsp;м.&nbsp;Черкас&nbsp;від7&nbsp;грудня&nbsp;2016&nbsp;року&nbsp;та&nbsp;ухвалу&nbsp;Апеляційного&nbsp;суду&nbsp;Черкаської&nbsp;області&nbsp;від&nbsp;27&nbsp;березня&nbsp;2017&nbsp;року&nbsp;щодо</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">&nbsp;ОСОБА_5&nbsp;.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">За&nbsp;вироком&nbsp;Придніпровського&nbsp;районного&nbsp;суду&nbsp;м.&nbsp;Черкас&nbsp;від&nbsp;7&nbsp;грудня&nbsp;2016&nbsp;року</span></p>
+		<p align="justify"><b><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">ОСОБА_5&nbsp;</span></b><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">,&nbsp;ІНФОРМАЦІЯ_1&nbsp;,&nbsp;громадянина&nbsp;України,&nbsp;уродженця&nbsp;та&nbsp;жителя&nbsp;м.&nbsp;Черкас,</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">визнано&nbsp;невинуватим&nbsp;у&nbsp;пред`явленому&nbsp;обвинуваченні&nbsp;у&nbsp;вчиненні&nbsp;злочину,&nbsp;передбаченого&nbsp;ч.&nbsp;4&nbsp;ст.&nbsp;190&nbsp;Кримінального&nbsp;кодексу&nbsp;України&nbsp;(далі&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;КК),&nbsp;через&nbsp;відсутність&nbsp;у&nbsp;його&nbsp;діях&nbsp;складу&nbsp;злочину&nbsp;та&nbsp;по&nbsp;суду&nbsp;виправдано.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">Цивільні&nbsp;позови&nbsp;ОСОБА_8&nbsp;і&nbsp;ВАТ&nbsp;&#171;Державний&nbsp;ощадний&nbsp;банк&nbsp;України&#187;&nbsp;залишено&nbsp;без&nbsp;розгляду.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">Органами&nbsp;досудового&nbsp;слідства&nbsp;ОСОБА_5&nbsp;обвинувачувався&nbsp;в&nbsp;тому,&nbsp;що&nbsp;він&nbsp;у&nbsp;листопаді&nbsp;2007&nbsp;року&nbsp;шляхом&nbsp;обману&nbsp;та&nbsp;зловживання&nbsp;довірою</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;заволодів&nbsp;чужим&nbsp;майном&nbsp;в&nbsp;особливо&nbsp;великих&nbsp;розмірах.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">Так,&nbsp;за&nbsp;версією&nbsp;обвинувачення,&nbsp;ОСОБА_5&nbsp;19&nbsp;листопада&nbsp;2007&nbsp;року&nbsp;в&nbsp;робочий&nbsp;час&nbsp;(точно&nbsp;не&nbsp;встановлено),&nbsp;маючи&nbsp;умисел&nbsp;на&nbsp;заволодіння&nbsp;чужим&nbsp;майном,&nbsp;у&nbsp;приміщенні&nbsp;філії&nbsp;Черкаського&nbsp;обласного&nbsp;управління&nbsp;ВАТ&nbsp;&#171;Ощадбанк&#187;&nbsp;набульв.&nbsp;Шевченка,&nbsp;320&nbsp;у&nbsp;м.&nbsp;Черкасах,&nbsp;шляхом&nbsp;зловживання&nbsp;довірою&nbsp;своєї&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">дружини&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;ОСОБА_10&nbsp;,&nbsp;яка&nbsp;йому&nbsp;довіряла&nbsp;та&nbsp;була&nbsp;впевнена,&nbsp;що&nbsp;він&nbsp;намагається&nbsp;допомогти&nbsp;їй&nbsp;із&nbsp;заміною&nbsp;предмета&nbsp;застави&nbsp;за&nbsp;договором&nbsp;кредиту&nbsp;її&nbsp;сестри&nbsp;ОСОБА_11&nbsp;,&nbsp;власноручно&nbsp;оформив&nbsp;і&nbsp;підписав&nbsp;від&nbsp;її&nbsp;імені&nbsp;кредитну&nbsp;заявуна&nbsp;отримання&nbsp;кредиту&nbsp;в&nbsp;розмірі&nbsp;225&nbsp;000&nbsp;грн,&nbsp;а&nbsp;23&nbsp;листопада&nbsp;2007&nbsp;року,обманувши&nbsp;працівників&nbsp;банку,&nbsp;від&nbsp;імені&nbsp;дружини&nbsp;підписав&nbsp;договір&nbsp;відновлювальної&nbsp;кредитної&nbsp;лінії&nbsp;від&nbsp;23&nbsp;листопада&nbsp;2007&nbsp;року&nbsp;№&nbsp;238-07&nbsp;з&nbsp;додатками&nbsp;до&nbsp;нього&nbsp;на&nbsp;отримання&nbsp;кредитних&nbsp;коштів&nbsp;у&nbsp;сумі&nbsp;225&nbsp;000&nbsp;грн&nbsp;із&nbsp;кінцевим&nbsp;терміном&nbsp;повернення&nbsp;22&nbsp;листопада&nbsp;2017&nbsp;року,&nbsp;розмір&nbsp;якої&nbsp;у&nbsp;1125&nbsp;разів&nbsp;перевищує&nbsp;неоподатковуваний&nbsp;мінімум&nbsp;доходів&nbsp;громадян,&nbsp;та,&nbsp;отримавши&nbsp;їх&nbsp;у&nbsp;касі,&nbsp;не&nbsp;повідомивпро&nbsp;це&nbsp;потерпілу&nbsp;ОСОБА_8&nbsp;,&nbsp;а&nbsp;гроші&nbsp;привласнив.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">Апеляційний&nbsp;суд&nbsp;Черкаської&nbsp;області&nbsp;ухвалою&nbsp;від&nbsp;27&nbsp;березня&nbsp;2017&nbsp;року&nbsp;апеляційні&nbsp;скарги&nbsp;прокурора&nbsp;ОСОБА_12&nbsp;,&nbsp;представника&nbsp;потерпілої&nbsp;ОСОБА_8&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;адвоката&nbsp;ОСОБА_9&nbsp;та&nbsp;представника&nbsp;цивільного&nbsp;позивача&nbsp;АТ&nbsp;&#171;Ощадбанк&#187;&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;ОСОБА_13&nbsp;залишив&nbsp;без&nbsp;задоволення,&nbsp;а&nbsp;вирок&nbsp;районного&nbsp;суду&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;без&nbsp;змін.&nbsp;</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">У&nbsp;касаційній&nbsp;скарзі&nbsp;ОСОБА_14&nbsp;просить&nbsp;скасувати&nbsp;судові&nbsp;рішення&nbsp;та&nbsp;направити&nbsp;справу&nbsp;на&nbsp;новий&nbsp;судовий&nbsp;розгляд&nbsp;через&nbsp;істотне&nbsp;порушення&nbsp;вимог&nbsp;кримінально-процесуального&nbsp;закону&nbsp;та&nbsp;неправильне&nbsp;застосування&nbsp;кримінального&nbsp;закону.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">На&nbsp;думку&nbsp;прокурора,&nbsp;у&nbsp;своїй&nbsp;ухвалі&nbsp;суд&nbsp;апеляційної&nbsp;інстанції&nbsp;не&nbsp;навів&nbsp;переконливих&nbsp;аргументів&nbsp;на&nbsp;спростовування&nbsp;доводів,&nbsp;наведених&nbsp;в&nbsp;апеляційних&nbsp;скаргах,&nbsp;та&nbsp;докладних&nbsp;мотивів&nbsp;щодо&nbsp;підстав&nbsp;прийнятого&nbsp;ним&nbsp;рішення.&nbsp;Прокурор&nbsp;вважає,&nbsp;що&nbsp;всупереч&nbsp;вимогамкримінально-процесуального&nbsp;закону&nbsp;апеляційний&nbsp;суд&nbsp;не&nbsp;надав&nbsp;належної&nbsp;оцінки&nbsp;зібраним&nbsp;у&nbsp;справі&nbsp;доказам,&nbsp;прийняв&nbsp;рішення&nbsp;про&nbsp;залишення&nbsp;без&nbsp;змін&nbsp;вироку&nbsp;місцевого&nbsp;суду&nbsp;на&nbsp;основі&nbsp;суперечливих&nbsp;та,&nbsp;на&nbsp;його&nbsp;думку,недостатньо&nbsp;перевірених&nbsp;судом&nbsp;доказах,&nbsp;взявши&nbsp;до&nbsp;уваги&nbsp;лише&nbsp;доводи&nbsp;сторони&nbsp;захисту&nbsp;і&nbsp;не&nbsp;оцінивши&nbsp;належним&nbsp;чином&nbsp;доказів&nbsp;обвинувачення,&nbsp;та&nbsp;не&nbsp;навів&nbsp;мотивів,&nbsp;з&nbsp;яких&nbsp;ці&nbsp;докази&nbsp;було&nbsp;відхилено.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">Крім&nbsp;того,вказує,&nbsp;що&nbsp;судами&nbsp;не&nbsp;було&nbsp;надано&nbsp;оцінки&nbsp;висновкам&nbsp;експертів&nbsp;про&nbsp;підроблення&nbsp;ОСОБА_5&nbsp;документів&nbsp;на&nbsp;отримання&nbsp;кредиту&nbsp;та&nbsp;одержання&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">коштів&nbsp;у&nbsp;банку,а&nbsp;також&nbsp;що&nbsp;ним&nbsp;буловчиненоінші&nbsp;неправомірні&nbsp;дії&nbsp;під&nbsp;час&nbsp;оформлення&nbsp;інших&nbsp;кредитних&nbsp;договорів&nbsp;у&nbsp;тому&nbsp;ж&nbsp;банку.</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">Потерпіла&nbsp;ОСОБА_8&nbsp;та&nbsp;її&nbsp;представник&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;адвокат&nbsp;ОСОБА_9&nbsp;у&nbsp;касаційних&nbsp;скаргах,доводи&nbsp;яких&nbsp;аналогічні&nbsp;за&nbsp;змістом,просять&nbsp;судові&nbsp;рішення&nbsp;скасувати&nbsp;та&nbsp;направити&nbsp;справу&nbsp;на&nbsp;новий&nbsp;судовий&nbsp;розгляд&nbsp;через&nbsp;істотне&nbsp;порушення&nbsp;вимог&nbsp;кримінально-процесуального&nbsp;законута&nbsp;неправильне&nbsp;застосування&nbsp;кримінального&nbsp;закону.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">На&nbsp;їхню&nbsp;думку,&nbsp;суд&nbsp;апеляційної&nbsp;інстанції&nbsp;залишив&nbsp;без&nbsp;уваги&nbsp;належні&nbsp;та&nbsp;допустимі&nbsp;докази&nbsp;ОСОБА_15&nbsp;у&nbsp;вчиненні&nbsp;злочину,&nbsp;які&nbsp;булонадано&nbsp;стороною&nbsp;обвинувачення.&nbsp;Також&nbsp;потерпіла&nbsp;та&nbsp;її&nbsp;представник&nbsp;стверджують,&nbsp;що,обґрунтовуючи&nbsp;недоведеність&nbsp;винуватості&nbsp;ОСОБА_5&nbsp;у&nbsp;вчиненні&nbsp;злочину,суд&nbsp;першої&nbsp;інстанції&nbsp;не&nbsp;взяв&nbsp;до&nbsp;уваги&nbsp;висновків&nbsp;експертів&nbsp;про&nbsp;підроблення&nbsp;підпису&nbsp;ОСОБА_8&nbsp;у&nbsp;договорі&nbsp;та&nbsp;інших&nbsp;документах.&nbsp;Крім&nbsp;того,&nbsp;вважають,&nbsp;щобез&nbsp;належної&nbsp;правової&nbsp;оцінки&nbsp;залишились&nbsp;і&nbsp;неправдиві&nbsp;пояснення&nbsp;свідків&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;працівників&nbsp;банку.&nbsp;Зазначають,&nbsp;що&nbsp;при&nbsp;апеляційному&nbsp;перегляді&nbsp;справи&nbsp;суд&nbsp;апеляційної&nbsp;інстанції&nbsp;вказаних&nbsp;порушень&nbsp;не&nbsp;усунув&nbsp;та&nbsp;безпідставно&nbsp;залишив</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;вирок&nbsp;місцевого&nbsp;суду&nbsp;без&nbsp;змін.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">Заслухавши&nbsp;доповідь&nbsp;судді,&nbsp;пояснення&nbsp;сторін,&nbsp;перевіривши&nbsp;матеріали&nbsp;кримінальної&nbsp;справи&nbsp;та&nbsp;доводи,&nbsp;наведені&nbsp;в&nbsp;касаційних&nbsp;скаргах,&nbsp;колегія&nbsp;суддів&nbsp;дійшла&nbsp;висновку,&nbsp;що&nbsp;касаційні&nbsp;скарги&nbsp;не&nbsp;підлягають&nbsp;задоволенню&nbsp;з&nbsp;огляду&nbsp;на&nbsp;таке.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">Відповідно&nbsp;до&nbsp;ст.&nbsp;398&nbsp;Кримінально-процесуального&nbsp;кодексу&nbsp;України&nbsp;1960&nbsp;року&nbsp;(далі&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;КПК&nbsp;1960&nbsp;року),&nbsp;касаційний&nbsp;суд&nbsp;вправі&nbsp;скасувати&nbsp;або&nbsp;змінити&nbsp;вирок,&nbsp;ухвалу&nbsp;у&nbsp;разі&nbsp;виявлення:&nbsp;істотного&nbsp;порушення&nbsp;вимог&nbsp;кримінально-процесуального&nbsp;закону;&nbsp;неправильного&nbsp;застосування&nbsp;кримінального&nbsp;закону;&nbsp;невідповідності&nbsp;призначеного&nbsp;покарання&nbsp;тяжкості&nbsp;злочину&nbsp;та&nbsp;особі&nbsp;засудженого.&nbsp;Однак&nbsp;не&nbsp;вправі&nbsp;втручатись&nbsp;у&nbsp;судові&nbsp;рішення&nbsp;на&nbsp;підставах&nbsp;однобічності&nbsp;або&nbsp;неповноти&nbsp;слідства&nbsp;чи&nbsp;невідповідності&nbsp;висновків&nbsp;суду&nbsp;фактичним&nbsp;обставинам&nbsp;справи.&nbsp;Отже,&nbsp;суд&nbsp;касаційної&nbsp;інстанції&nbsp;не&nbsp;перевіряє&nbsp;судових&nbsp;рішень&nbsp;щодо&nbsp;неповноти&nbsp;й&nbsp;однобічності&nbsp;слідства,&nbsp;а&nbsp;також&nbsp;невідповідності&nbsp;висновків,&nbsp;викладених&nbsp;у&nbsp;вироку,&nbsp;фактичним&nbsp;обставинам&nbsp;справи.&nbsp;Переглядаючи&nbsp;справу,&nbsp;Суд&nbsp;виходить&nbsp;із&nbsp;фактичних&nbsp;обставин,&nbsp;установлених&nbsp;у&nbsp;вироку.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">Зі&nbsp;змісту&nbsp;касаційних&nbsp;скарг&nbsp;убачається,&nbsp;що&nbsp;сторони&nbsp;посилаються&nbsp;на&nbsp;неповноту&nbsp;й&nbsp;однобічністьсудового&nbsp;слідства,&nbsp;невідповідність&nbsp;висновків&nbsp;суду&nbsp;фактичним&nbsp;обставинам&nbsp;справи,&nbsp;визначення&nbsp;яких&nbsp;дано&nbsp;у&nbsp;статтях&nbsp;368&nbsp;та&nbsp;369&nbsp;КПК&nbsp;1960&nbsp;року,&nbsp;просять&nbsp;дати&nbsp;доказам&nbsp;у&nbsp;справі&nbsp;іншу&nbsp;оцінку,&nbsp;ніж&nbsp;ту&nbsp;яку&nbsp;їм&nbsp;надали&nbsp;суди&nbsp;першої&nbsp;та&nbsp;апеляційної&nbsp;інстанцій,&nbsp;тоді&nbsp;як&nbsp;перевірку&nbsp;цих&nbsp;обставин&nbsp;до&nbsp;повноважень&nbsp;касаційного&nbsp;суду&nbsp;законом&nbsp;не&nbsp;віднесено.&nbsp;</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Суд&nbsp;першої&nbsp;інстанції&nbsp;ретельно&nbsp;перевірив&nbsp;зібрані&nbsp;у&nbsp;справідокази,&nbsp;детально&nbsp;виклав&nbsp;їх&nbsp;зміст&nbsp;у&nbsp;вироку&nbsp;та&nbsp;дав&nbsp;їм&nbsp;належну&nbsp;правову&nbsp;оцінку.&nbsp;Всі&nbsp;ці&nbsp;докази</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">&nbsp;узгоджуються&nbsp;між&nbsp;собоюі&nbsp;не&nbsp;викликають&nbsp;сумнівів&nbsp;у&nbsp;їх&nbsp;достовірності.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">У&nbsp;своїй&nbsp;ухвалі&nbsp;апеляційний&nbsp;суднадав&nbsp;відповіді&nbsp;на&nbsp;всі&nbsp;доводисторони&nbsp;обвинувачення,викладені&nbsp;в&nbsp;апеляційних&nbsp;скаргах,&nbsp;зміст&nbsp;яких&nbsp;є&nbsp;аналогічним&nbsp;тим&nbsp;доводам,&nbsp;що&nbsp;наведені&nbsp;в&nbsp;касаційних&nbsp;скаргах.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Як&nbsp;убачається&nbsp;з&nbsp;матеріалів&nbsp;кримінальної&nbsp;справи,&nbsp;органом&nbsp;досудового&nbsp;слідства&nbsp;обвинувачення&nbsp;за&nbsp;ст.&nbsp;358&nbsp;ОСОБА_16&nbsp;не&nbsp;пред`являлося,а&nbsp;тому&nbsp;доводи&nbsp;в&nbsp;касаційних&nbsp;скаргах&nbsp;щодо&nbsp;неврахування&nbsp;судами&nbsp;першої&nbsp;та&nbsp;апеляційної&nbsp;інстанцій&nbsp;висновків&nbsp;експертів&nbsp;про&nbsp;підробленняним&nbsp;підписів&nbsp;потерпілої&nbsp;колегія&nbsp;суддів&nbsp;вважає&nbsp;неприйнятними&nbsp;та&nbsp;їх&nbsp;не&nbsp;розглядає.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">За&nbsp;змістом&nbsp;диспозиції</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">ст.190&nbsp;КК&nbsp;шахрайство&nbsp;полягає&nbsp;у&nbsp;заволодінні&nbsp;чужим&nbsp;майном&nbsp;або&nbsp;придбанні&nbsp;права&nbsp;на&nbsp;нього&nbsp;шляхом&nbsp;обману&nbsp;потерпілого&nbsp;чи&nbsp;зловживання&nbsp;його&nbsp;довірою.Об`єктивна&nbsp;сторона&nbsp;шахрайства&nbsp;полягає&nbsp;у&nbsp;заволодінні&nbsp;майном&nbsp;або&nbsp;придбанні&nbsp;права&nbsp;на&nbsp;майно&nbsp;потерпілого&nbsp;шляхом&nbsp;обману&nbsp;чи&nbsp;зловживання&nbsp;довірою,&nbsp;а&nbsp;суб`єктивна&nbsp;сторона&nbsp;характеризується&nbsp;прямим&nbsp;умислом&nbsp;і&nbsp;корисливим&nbsp;мотивом.&nbsp;У&nbsp;разі&nbsp;відсутності&nbsp;хоча&nbsp;б&nbsp;одного&nbsp;зназваних&nbsp;елементів,у&nbsp;тому&nbsp;числі&nbsp;об`єктивної&nbsp;та/або&nbsp;суб`єктивної&nbsp;сторони&nbsp;складу&nbsp;цього&nbsp;злочину,&nbsp;такі&nbsp;дії&nbsp;особи&nbsp;можуть&nbsp;вказувати&nbsp;на&nbsp;наявність&nbsp;між&nbsp;сторонами&nbsp;цивільно-правових&nbsp;відносині&nbsp;не&nbsp;можуть&nbsp;вважатися&nbsp;злочином.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">У&nbsp;разі&nbsp;здійснення&nbsp;позичальником&nbsp;(поручителем)&nbsp;принаймні&nbsp;часткового&nbsp;повернення&nbsp;коштів&nbsp;за&nbsp;кредитним&nbsp;договором,&nbsp;передачі&nbsp;в&nbsp;заставу&nbsp;майна&nbsp;з&nbsp;подальшим&nbsp;зверненням&nbsp;стягнення&nbsp;на&nbsp;нього,&nbsp;і&nbsp;за&nbsp;відсутності&nbsp;доказів&nbsp;про&nbsp;намір&nbsp;позичальника&nbsp;(поручителя)&nbsp;не&nbsp;виконувати&nbsp;своїх&nbsp;зобов`язань&nbsp;ще&nbsp;в&nbsp;момент&nbsp;отримання&nbsp;кредиту,&nbsp;підстав&nbsp;для&nbsp;притягнення&nbsp;до&nbsp;кримінальної&nbsp;відповідальності&nbsp;немає,&nbsp;оскільки&nbsp;у&nbsp;діях&nbsp;позичальника&nbsp;(поручителя)&nbsp;відсутні&nbsp;об`єктивна&nbsp;і&nbsp;суб`єктивна&nbsp;сторона&nbsp;шахрайства.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Аналізуючи&nbsp;зібрані&nbsp;у&nbsp;справі&nbsp;докази,суди&nbsp;першої&nbsp;та&nbsp;апеляційної&nbsp;інстанційдійшли&nbsp;правильного&nbsp;висновку&nbsp;про&nbsp;відсутність&nbsp;доказів&nbsp;того,&nbsp;що&nbsp;при&nbsp;оформленні&nbsp;документів&nbsp;на&nbsp;отримання&nbsp;ОСОБА_17&nbsp;мав&nbsp;намір&nbsp;шляхом&nbsp;обману&nbsp;чи&nbsp;зловживання&nbsp;довірою&nbsp;привласнити&nbsp;кошти&nbsp;та&nbsp;не&nbsp;виконувати&nbsp;зобов`язання&nbsp;щодо&nbsp;їх&nbsp;повернення.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Як&nbsp;убачається&nbsp;з&nbsp;матеріалів&nbsp;справи,&nbsp;23&nbsp;листопада&nbsp;2007&nbsp;року&nbsp;між&nbsp;ОСОБА_8&nbsp;та&nbsp;ВАТ&#171;Державний&nbsp;ощадний&nbsp;банк&nbsp;України&#187;&nbsp;укладено&nbsp;договір&nbsp;відновлювальної&nbsp;кредитної&nbsp;лінії&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">№&nbsp;238-07&nbsp;(т.&nbsp;1,а.с.25-31)&nbsp;та&nbsp;іпотечний&nbsp;договір&nbsp;№&nbsp;238-07/01,&nbsp;згідно&nbsp;з&nbsp;яким&nbsp;предметом&nbsp;іпотеки&nbsp;для&nbsp;забезпечення&nbsp;належного&nbsp;виконання&nbsp;позичальником&nbsp;умов&nbsp;договору&nbsp;є&nbsp;приміщення&nbsp;магазину&nbsp;&#171;Аліса&#187;&nbsp;навул.&nbsp;Леніна,&nbsp;57&nbsp;(нині&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">&nbsp;вул.&nbsp;Небесної&nbsp;сотні)&nbsp;у&nbsp;м.&nbsp;Черкасах&nbsp;(т.&nbsp;1,а.с.33-35);&nbsp;згідно&nbsp;з&nbsp;договорами&nbsp;поруки&nbsp;від&nbsp;23&nbsp;листопада&nbsp;2007&nbsp;року&nbsp;поручителями&nbsp;ОСОБА_8&nbsp;виступили&nbsp;ОСОБА_5&nbsp;та&nbsp;ОСОБА_18&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">(т.&nbsp;1,а.с.&nbsp;22-25);&nbsp;23&nbsp;листопада&nbsp;2007&nbsp;року&nbsp;видано&nbsp;видатковий&nbsp;касовий&nbsp;ордер&nbsp;про&nbsp;видачу&nbsp;ОСОБА_8&nbsp;згідно&nbsp;з&nbsp;договором&nbsp;відновлювальної&nbsp;кредитної&nbsp;лінії&nbsp;225000&nbsp;грн&nbsp;(т.&nbsp;1,а.с.39);&nbsp;відповідно&nbsp;до&nbsp;прибуткових&nbsp;касових&nbsp;ордерів&nbsp;виплати&nbsp;за&nbsp;кредитним&nbsp;договором&nbsp;здійснювалися&nbsp;від&nbsp;імені&nbsp;позичальника&nbsp;до&nbsp;жовтня&nbsp;2008&nbsp;року.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Допитана&nbsp;при&nbsp;розгляді&nbsp;справи&nbsp;судами&nbsp;першої&nbsp;та&nbsp;апеляційної&nbsp;інстанцій&nbsp;потерпіла&nbsp;ОСОБА_8&nbsp;пояснила,&nbsp;що&nbsp;вона&nbsp;перебувала&nbsp;у&nbsp;шлюбі&nbsp;з&nbsp;ОСОБА_5&nbsp;,і&nbsp;на&nbsp;її&nbsp;ім`я&nbsp;був&nbsp;зареєстрований&nbsp;магазин,&nbsp;який&nbsp;фактично&nbsp;належав&nbsp;її&nbsp;матері&nbsp;та&nbsp;сестрі.З&nbsp;метою&nbsp;розвитку&nbsp;діяльності&nbsp;магазину&nbsp;сестра&nbsp;отримала&nbsp;кредит&nbsp;під&nbsp;заставу&nbsp;квартири&nbsp;батьків.&nbsp;Восени&nbsp;2007&nbsp;ОСОБА_19&nbsp;повідомив&nbsp;їй&nbsp;про&nbsp;необхідність&nbsp;змінити&nbsp;предмет&nbsp;застави&nbsp;з&nbsp;квартири&nbsp;на&nbsp;магазин&nbsp;для&nbsp;того,&nbsp;щоб&nbsp;його&nbsp;не&nbsp;знесли,&nbsp;тому&nbsp;вона23&nbsp;листопада&nbsp;2007&nbsp;року&nbsp;прибула&nbsp;до&nbsp;нотаріуса,&nbsp;де&nbsp;розписаласяв&nbsp;документах,&nbsp;та&nbsp;вважала,&nbsp;що&nbsp;підписує&nbsp;договір&nbsp;про&nbsp;зміну&nbsp;предмета&nbsp;іпотеки.&nbsp;Наміру&nbsp;отримувати&nbsp;кредит&nbsp;у&nbsp;сумі&nbsp;225&nbsp;000&nbsp;грн&nbsp;вона&nbsp;не&nbsp;мала,&nbsp;з&nbsp;цього&nbsp;приводу&nbsp;в&nbsp;банк&nbsp;не&nbsp;зверталася&nbsp;і&nbsp;коштів&nbsp;не&nbsp;отримувала,&nbsp;про&nbsp;існування&nbsp;договору&nbsp;та&nbsp;отримання&nbsp;кредиту&nbsp;в&nbsp;сумі&nbsp;225&nbsp;000грн&nbsp;дізналася&nbsp;лише&nbsp;у&nbsp;2008&nbsp;році.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Під&nbsp;час&nbsp;допиту&nbsp;в&nbsp;судах&nbsp;першої&nbsp;та&nbsp;апеляційної&nbsp;ОСОБА_20&nbsp;пояснив,&nbsp;що&nbsp;з&nbsp;2002&nbsp;року&nbsp;він&nbsp;перебував&nbsp;у&nbsp;шлюбі&nbsp;з&nbsp;ОСОБА_8&nbsp;,&nbsp;яка&nbsp;разом&nbsp;із&nbsp;своїми&nbsp;родичами&nbsp;займалася&nbsp;бізнесом&nbsp;та&nbsp;для&nbsp;його&nbsp;розвитку&nbsp;отримувала&nbsp;кредити&nbsp;у&nbsp;різних&nbsp;банківських&nbsp;установах.&nbsp;Восени&nbsp;2007&nbsp;року&nbsp;ОСОБА_8&nbsp;разом&nbsp;із&nbsp;ним&nbsp;зверталасяу&nbsp;філію&nbsp;&#171;Ощадбанку&#187;&nbsp;в&nbsp;м.&nbsp;Черкасах&nbsp;для&nbsp;отримання&nbsp;кредиту&nbsp;в&nbsp;сумі&nbsp;225&nbsp;000&nbsp;грн.&nbsp;Працівники&nbsp;банківської&nbsp;установи,&nbsp;у&nbsp;тому&nbsp;числі&nbsp;й&nbsp;служби&nbsp;безпеки&nbsp;банку,&nbsp;неодноразово&nbsp;проводили&nbsp;з&nbsp;дружиною&nbsp;бесіди&nbsp;щодо&nbsp;порядку&nbsp;та&nbsp;умов&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">видачі&nbsp;кредиту.&nbsp;При&nbsp;цьому&nbsp;він&nbsp;на&nbsp;прохання&nbsp;ОСОБА_8&nbsp;поставив&nbsp;у&nbsp;деяких&nbsp;банківських&nbsp;документах&nbsp;підписи&nbsp;від&nbsp;її&nbsp;імені.Длязабезпечення&nbsp;ОСОБА_21&nbsp;разом&nbsp;із&nbsp;ним&nbsp;уклала&nbsp;договір&nbsp;іпотеки&nbsp;(магазин&nbsp;&#171;&nbsp;ІНФОРМАЦІЯ_2&nbsp;&#187;)&nbsp;у&nbsp;нотаріуса.&nbsp;Після&nbsp;повернення&nbsp;в&nbsp;банк&nbsp;дружина&nbsp;особисто&nbsp;отримала&nbsp;кошти&nbsp;в&nbsp;касі,&nbsp;а&nbsp;він&nbsp;на&nbsp;її&nbsp;прохання&nbsp;поставив&nbsp;свій&nbsp;підпис&nbsp;у&nbsp;видатковому&nbsp;ордері.&nbsp;Протягом&nbsp;11&nbsp;місяців&nbsp;він&nbsp;погашав&nbsp;кредит&nbsp;від&nbsp;імені&nbsp;дружини,&nbsp;при&nbsp;цьому&nbsp;вона&nbsp;та&nbsp;її&nbsp;родичі&nbsp;давали&nbsp;кошти&nbsp;на&nbsp;сплату&nbsp;кредиту.&nbsp;У&nbsp;2009&nbsp;році&nbsp;шлюб&nbsp;між&nbsp;ними</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">&nbsp;було&nbsp;розірвано,&nbsp;і&nbsp;він&nbsp;припинив&nbsp;здійснювати&nbsp;виплати&nbsp;банку.&nbsp;</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Вказані&nbsp;пояснення&nbsp;ОСОБА_5&nbsp;підтверджуються&nbsp;поясненнями&nbsp;свідків&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">&nbsp;працівників&nbsp;банківської&nbsp;установи:&nbsp;ОСОБА_22&nbsp;,&nbsp;ОСОБА_23&nbsp;,&nbsp;ОСОБА_24&nbsp;,</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">&nbsp;ОСОБА_25&nbsp;(про&nbsp;те,&nbsp;що&nbsp;ОСОБА_8&nbsp;особисто&nbsp;отримувала&nbsp;кошти&nbsp;в&nbsp;касі),&nbsp;нотаріуса&nbsp;ОСОБА_26&nbsp;(щодо&nbsp;обставин&nbsp;підписання&nbsp;договору&nbsp;іпотеки),&nbsp;показанняяких&nbsp;є&nbsp;чіткими&nbsp;та&nbsp;послідовними&nbsp;як&nbsp;під&nbsp;час&nbsp;проведення&nbsp;досудового&nbsp;слідства,&nbsp;так&nbsp;і&nbsp;під&nbsp;час&nbsp;розгляду&nbsp;справи&nbsp;у&nbsp;судах&nbsp;першої&nbsp;та&nbsp;апеляційної&nbsp;інстанцій.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Підстав&nbsp;сумніватись&nbsp;у&nbsp;правдивості&nbsp;їхніх&nbsp;показань,&nbsp;як&nbsp;на&nbsp;це&nbsp;звертають&nbsp;увагу&nbsp;сторони&nbsp;у&nbsp;своїх&nbsp;касаційних&nbsp;скаргах,&nbsp;Суд&nbsp;не&nbsp;має,&nbsp;оскільки&nbsp;вказані&nbsp;свідки&nbsp;були&nbsp;допитані&nbsp;в&nbsp;судових&nbsp;засіданнях,&nbsp;та&nbsp;їх&nbsp;було&nbsp;попереджено&nbsp;про&nbsp;кримінальну&nbsp;відповідальність&nbsp;за&nbsp;дачу&nbsp;завідомо&nbsp;неправдивих&nbsp;показань.&nbsp;Надані&nbsp;ними&nbsp;показання&nbsp;також&nbsp;узгоджуються&nbsp;з&nbsp;іншими&nbsp;зібраними&nbsp;у&nbsp;справі&nbsp;доказами,&nbsp;які&nbsp;було&nbsp;досліджено&nbsp;судом.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Згідно&nbsp;зі&nbsp;ст.&nbsp;62&nbsp;Конституції&nbsp;України&nbsp;обвинувачення&nbsp;не&nbsp;може&nbsp;ґрунтуватися&nbsp;на&nbsp;припущеннях&nbsp;і&nbsp;всі&nbsp;сумніви&nbsp;щодо&nbsp;доведеності&nbsp;вини&nbsp;особою&nbsp;тлумачаться&nbsp;на&nbsp;її&nbsp;користь.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">У&nbsp;постанові&nbsp;Пленуму&nbsp;Верховного&nbsp;Суду&nbsp;України&nbsp;від&nbsp;29&nbsp;червня&nbsp;1990&nbsp;року&nbsp;№&nbsp;5&nbsp;&#171;Про&nbsp;виконання&nbsp;судами&nbsp;України&nbsp;законодавства&nbsp;і&nbsp;постанов&nbsp;Пленуму&nbsp;ВСУ&nbsp;з&nbsp;питань&nbsp;судового&nbsp;розгляду&nbsp;кримінальних&nbsp;справ&nbsp;і&nbsp;постановлення&nbsp;вироку&#187;&nbsp;(із&nbsp;змінами)&nbsp;вказано,&nbsp;що&nbsp;коли&nbsp;зібрані&nbsp;докази&nbsp;не&nbsp;підтверджують&nbsp;обвинувачення&nbsp;і&nbsp;всі&nbsp;можливості&nbsp;збирання&nbsp;додаткових&nbsp;доказів&nbsp;вичерпано,&nbsp;суд&nbsp;зобов`язаний&nbsp;постановити&nbsp;виправдувальний&nbsp;вирок.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Незгода&nbsp;прокурора,&nbsp;потерпілої&nbsp;та&nbsp;її&nbsp;представника&nbsp;із&nbsp;оцінкою&nbsp;доказів,&nbsp;наданих&nbsp;судом,&nbsp;не&nbsp;може&nbsp;свідчити&nbsp;про&nbsp;те,&nbsp;що&nbsp;ці&nbsp;докази&nbsp;було&nbsp;досліджено&nbsp;з&nbsp;порушенням&nbsp;вимог&nbsp;кримінально-процесуального&nbsp;закону.&nbsp;</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Наведені&nbsp;в&nbsp;касаційних&nbsp;скаргах&nbsp;мотиви&nbsp;не&nbsp;спростовують&nbsp;правильності&nbsp;висновків,&nbsp;викладених&nbsp;у&nbsp;судових&nbsp;рішеннях,&nbsp;і&nbsp;не&nbsp;містять&nbsp;переконливих&nbsp;доводів,&nbsp;які&nbsp;би&nbsp;дозволяли&nbsp;Верховному&nbsp;Суду&nbsp;дійти&nbsp;висновку,&nbsp;що&nbsp;їх&nbsp;було&nbsp;постановлено&nbsp;з&nbsp;істотними&nbsp;порушеннями&nbsp;норм&nbsp;права,&nbsp;які&nbsp;можуть&nbsp;поставити&nbsp;під&nbsp;сумнів&nbsp;їх&nbsp;законність.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Вирок&nbsp;суду&nbsp;першої&nbsp;інстанції&nbsp;та&nbsp;ухвала&nbsp;апеляційного&nbsp;суду&nbsp;є&nbsp;належно&nbsp;умотивованими&nbsp;та&nbsp;обґрунтованими&nbsp;і&nbsp;за&nbsp;змістом&nbsp;відповідають&nbsp;вимогам&nbsp;статей&nbsp;323-324,&nbsp;377&nbsp;КПК&nbsp;1960&nbsp;року</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Під&nbsp;час&nbsp;касаційної&nbsp;перевірки&nbsp;колегія&nbsp;суддів&nbsp;не&nbsp;встановила&nbsp;порушень&nbsp;норм&nbsp;матеріального&nbsp;або&nbsp;процесуального&nbsp;права,&nbsp;які&nbsp;би&nbsp;ставили&nbsp;під&nbsp;сумнів&nbsp;законність&nbsp;та&nbsp;обґрунтованість&nbsp;оскаржуваних&nbsp;судових&nbsp;рішень&nbsp;і&nbsp;були&nbsp;б&nbsp;підставами&nbsp;для&nbsp;їх&nbsp;зміни&nbsp;чи&nbsp;скасування,&nbsp;а&nbsp;тому&nbsp;касаційні&nbsp;скарги&nbsp;прокурора,&nbsp;потерпілої&nbsp;та&nbsp;представника&nbsp;потерпілої&nbsp;задоволенню&nbsp;не&nbsp;підлягають.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Керуючись</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">статтями&nbsp;394</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">396,&nbsp;398&nbsp;КПК&nbsp;1960&nbsp;року,&nbsp;п.&nbsp;15&nbsp;розділу&nbsp;ХІ</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">&#171;Перехідні&nbsp;положення&#187;&nbsp;КПК</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">,&nbsp;Верховний&nbsp;Суд</span></p>
+		<p align="justify"><b><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">ухвалив:</span></b></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Вирок&nbsp;Придніпровського&nbsp;районного&nbsp;суду&nbsp;м.&nbsp;Черкас&nbsp;від&nbsp;7&nbsp;грудня&nbsp;2016&nbsp;року&nbsp;та&nbsp;ухвалу&nbsp;Апеляційного&nbsp;суду&nbsp;Черкаської&nbsp;області&nbsp;від&nbsp;27&nbsp;березня&nbsp;2017&nbsp;року&nbsp;щодо&nbsp;ОСОБА_5&nbsp;залишити&nbsp;без&nbsp;зміни,&nbsp;а&nbsp;касаційні&nbsp;скарги&nbsp;прокурора&nbsp;ОСОБА_7&nbsp;,&nbsp;потерпілої&nbsp;ОСОБА_8&nbsp;та&nbsp;представника&nbsp;потерпілої&nbsp;-&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">адвоката&nbsp;ОСОБА_9&nbsp;</span><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">&nbsp;без&nbsp;задоволення.</span></p>
+		<p align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">УхвалаВерховного&nbsp;Суду&nbsp;набирає&nbsp;законної&nbsp;сили&nbsp;з&nbsp;моменту&nbsp;її&nbsp;проголошення&nbsp;й&nbsp;оскарженню&nbsp;не&nbsp;підлягає.&nbsp;</span></p>
+		<p align="justify"><b><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">Судді:</span></b></p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p>&nbsp;</p>
+		<p align="justify"><b><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;</span></b><span align="justify" style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">&nbsp;</span><b align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:11pt;">&nbsp;</span></b><b align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">ОСОБА_27&nbsp;</span></b><b align="justify"><span style="background-color:#FFFFFF;font-family:Times New Roman CYR;font-size:14pt;">&nbsp;ОСОБА_3&nbsp;</span></b></p>
+		<p>&nbsp;</p>
+
+	</body>
+</html></textarea>
+</div>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $(document).ready(function () {
+            $('h1').css('display', 'none');
+            $('#logon').css('display', 'none');
+            $('#menucontainer').css('display', 'none');
+            $('#header').css('margin-bottom', '10px');
+            function windowResize() {
+                var el = $('#divdocument');
+                el.height($(window).height() - 1 - el.offset().top - el.outerHeight(true) + el.height());
+                var el = $('#divframe');
+                el.width($('#divdocument').width() - el.outerWidth(true) + el.width());
+                el.height($('#divdocument').height() - $('#divcasecat').outerHeight(true) - $('#divprint').outerHeight() - el.outerHeight(true) + el.height());
+            }
+            windowResize();
+            $(window).resize(function () {
+                windowResize();
+            });
+
+            var el = $('#txtdepository');
+            var src = el.text();
+            var txt = '';
+            var pos = 0;
+            var step = 32766;
+            while (pos < src.length) {
+                el.text(src.substr(pos, step));
+                pos += step;
+                txt = txt + el.html();
+            }
+            txt = txt.replace(/&lt;/gi, "<").replace(/&gt;/gi, ">").replace(/color/gi, "tag1").replace(/font-family/gi, "tag2").replace(/font-size/gi, "tag3").replace(/line-height/gi, "tag4").replace(/text-indent/gi, "tag5").replace(/margin/gi, "tag6").replace(/padding/gi, "tag7");
+
+            var s1 = "&nbsp;";
+            var s2 = s1 + s1;
+            var ix = 0;
+            var ix2 = 0;
+            while (ix < txt.length && (ix2 = txt.indexOf(s1, ix)) >= 0) {
+                if (ix2 == txt.indexOf(s2, ix)) {
+                    ix = ix2 + s2.length;
+                } else {
+                    txt = txt.substr(0, ix2) + " " + txt.substr(ix2 + s1.length);
+                    ix = ix2;
+                }
+            }
+
+            divframe.document.open();
+            divframe.document.write(txt);
+            divframe.document.close();
+            $('#divframe').contents().find('head').each(function () {
+                try {
+                    // Для версій ІЕ <= 8 код не працює, тому ставимо обгорточку try
+                    $(this).find('title').html($('html').find('title').html());
+                } catch (e) { }
+                $(this).html('<link rel="shortcut icon" href="/Content/Images/favicon.ico" type="image/x-icon" />' + $(this).html());
+            }).parent('html').find('body').each(function () {
+                $(this).css('margin', '0').css('padding', '10px');
+                $(this).find('img').remove();
+                $(this).html('<div style="display: block; text-align: center"><img /></div>' + $(this).html());
+                $(this).find('img').attr('src', '/Content/Images/gerbvs.png').attr('title', 'Державний герб України').attr('alt', 'Державний герб України');
+            });
+            $('a#tooltp').click(function () {
+                $('form#ree_doc').submit();
+            });
+            $('#btnPrint').click(function () {
+                $('#divframe').contents().find('html').prepend('<hr />');
+                $('#divframe').contents().find('html').prepend($('div#divcasecat').html());
+                document.write($('#divframe').contents().find('html').html());
+                document.close();
+                $('a:link').css({
+                    "color": "black",
+                    "text-decoration": "none",
+                    "cursor": "text"
+                });
+                $('a:visited').css({
+                    "color": "black",
+                    "text-decoration": "none",
+                    "cursor": "text"
+                });
+                $('a:hover').css({
+                    "color": "black",
+                    "text-decoration": "none",
+                    "cursor": "text"
+                });
+                $('a:active').css({
+                    "color": "black",
+                    "text-decoration": "none",
+                    "cursor": "text"
+                });
+            });
+        });
+    });
+</script>
+            </div>
+            <div id="init">
+                <!--div class="init-caption">
+                    Введіть, будь ласка, логін та пароль
+                </div-->
+                <div class="init-log">
+                    <a>Логін:</a><br />
+                    <a>Для помилки:</a><br />
+                    <input id="initLog" type="text" />
+                </div>
+                <div class="init-pass">
+                    <a>Пароль:</a><br />
+                    <a>Для помилки:</a><br />
+                    <input id="initPass" type="password" />
+                </div>
+                <div class="init-submit">
+                    <input id="initOk" type="button" value="Вхід" />
+                    <input id="initCancel" type="button" value="Відмова" />
+                </div>
+            </div>
+
+            <script type="text/javascript">
+
+
+		    function Btn_search_click() {
+		        if ((!$('#logon').hasClass('notVisible')) || ('1' == '1'))
+                {
+		            $('#login > form').submit();
+		            blockPage();
+		        }
+                else
+                {
+		            $('#backImage2').attr('src', '/Image?id=' + (new Date()).getTime().toString());
+		            $('#modalcaptcha').show();
+		        }
+
+		        var fNumber = Math.floor(Math.random() * 11);
+
+		        if (fNumber == 0) {
+		            fNumber = 1;
+		        }
+
+		        var sNumber = Math.floor(Math.random() * 11);
+		        var captcha = "Вкажіть правильний результат " + fNumber + "+" + sNumber + " ";
+
+		        var summ = fNumber + sNumber;
+
+
+		        var width = parseInt($(document).width() / 2);
+		        var height = parseInt($(document).height() / 2);
+
+		        $('#modalcaptcha').css({
+		            top: 300,
+		            left: width - parseInt($('#modalcaptcha').width() / 2)
+		        });
+
+		        return false;
+		    }
+
+		    $(document).ready(function () {
+
+		       // $('#btn').click(Btn_search_click);
+
+
+
+		        $('#modalcaptcha .searchcapchaclose').click(function () {
+		            $('#modalcaptcha').hide();
+		        });
+
+		    });
+
+            </script>
+
+            <div id="modalcaptcha" style="display: none;">
+                <p style="width: 355px; text-align: justify;">З метою упередження перешкоджанню стабільній роботі Реєстру шляхом здійснення автоматичних або автоматизованих запитів на пошук та копіювання ("викачування") бази даних, запроваджено інтерактивний елемент захисту системи</p>
+
+                <div id="captchablock">
+                    <a id="captchaQuery">Введіть cуму цифр, зображених на малюнку:</a><br />
+
+                    <input id="backWord2" type="text" /><br />
+                    <img id="backImage2" alt="" />
+                </div>
+                <div>
+                    <button type="button" class="searchbtn">Перевірити</button>
+                    <button type="button" class="searchcapchaclose">Закрити</button>
+                </div>
+            </div>
+            <div id="back">
+                <div class="back-name">
+                    <a>Ваше ім'я:</a><br />
+                    <a>Для помилки:</a><br />
+                    <input id="backName" type="text" class="backName" />
+                </div>
+                <div class="back-mail">
+                    <a>Ваш e-mail:</a><br />
+                    <a>Для помилки:</a><br />
+                    <input id="backMail" type="text" class="backMail" />
+                </div>
+                <div class="back-message">
+                    <a>Повідомлення:</a><br />
+                    <a>Для помилки:</a><br />
+                    <textarea id="backMessage" class="backMessage" cols="0" rows="0"></textarea>
+                </div>
+                <div class="back-word">
+                    <a>Введіть в поле результат арифметичного виразу:</a><br />
+                    <a>Для помилки:</a><br />
+                    <input id="backWord" type="text" class="backWord" /><br />
+                    <img id="backImage" class="backImage" alt="" />
+                </div>
+                <div class="back-submit">
+                    <input id="backOk" type="button" class="backOk" value="Відправити" />
+                    <input id="backCancel" type="button" class="backCancel" value="Скасувати" />
+                </div>
+            </div>
+            <div id="block">
+                Зачекайте, будь ласка...
+            </div>
+            <div id="footer">
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        startURL = function () {
+            var url = document.URL;
+            var url_1 = url.substr(0, url.indexOf('//') + 2);
+            var url_2 = url.substr(url.indexOf('//') + 2);
+            url = url_1 + url_2.substr(0, url_2.indexOf('/') + 1);
+            return url;
+        }
+        
+        $(document).ready(function () {
+            $('#aLoginOut').click(function () {
+                if ($(this).find('label').length == 0) {
+                    $.ajax({
+                        url: startURL() + "Account/LogOff",
+                        cache: false,
+                        data: {
+                        },
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (data, statusLine) {
+                            $.each(data, function (i, rec) {
+                                if (rec.key == 'success') {
+                                    $('#logon').addClass('notVisible');
+                                    $('#aLoginOut').html('Повний доступ');
+                                    $('#tableLiga').removeClass('notVisible');
+                                    if ($('#Liga').val() == 'true') $('#divProviderLinks').removeAttr('style');
+                                    console.log(res, "res")
+                                    console.log(i,"i")
+                                }
+                                if (rec.key == 'error') {
+                                    alert(rec.mes);
+                                }
+                            });
+                        },
+                        error: function (e) {
+                            alert('Виникла непередбачувана та неконтрольована помилка [' + e.Message + ']!');
+                        }
+                    });
+                    return;
+                }
+            });
+            $('#fullAccess').click(function () {
+                if ($(this).find('label').length > 0) {
+                    $.ajax({
+                        url: startURL() + "Account/LogOff",
+                        cache: false,
+                        data: {
+                        },
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (data, statusLine) {
+                            $.each(data, function (i, rec) {
+                                if (rec.key == 'success') {
+                                    $('#logon').addClass('notVisible');
+                                    $('#fullAccess').html('Повний доступ');
+                                    $('#tableLiga').removeClass('notVisible');
+                                    if ($('#Liga').val() == 'true') $('#divProviderLinks').removeAttr('style');
+                                }
+                                if (rec.key == 'error') {
+                                    alert(rec.mes);
+                                }
+                            });
+                        },
+                        error: function (e) {
+                            alert('Виникла непередбачувана та неконтрольована помилка [' + e.Message + ']!');
+                        }
+                    });
+                    return;
+                }
+                //var fr = $('#init');
+                //fr.find('input:text, input:password').val('').prev().addClass('notVisible').prev().addClass('notVisible').addClass('redColor').prev().removeClass('notVisible').prev().removeClass('notVisible');
+                //fr.css('display', 'inline');
+                //fr.css('left', ($(window).width() - fr.outerWidth()) / 2);
+                //fr.css('top', $(window).scrollTop() + ($(window).height() - fr.outerHeight()) / 2);
+                //fr.find('input:first').focus();
+            });
+
+            $('#init').find('input:password').keydown(function (e) {
+                if (e.keyCode == 13) {
+                    $('#initOk').click();
+                }
+            });
+
+            $('#initOk').click(function () {
+                var fr = $('#init');
+                fr.find('input:text, input:password').prev().addClass('notVisible').prev().addClass('notVisible').addClass('redColor').prev().removeClass('notVisible').prev().removeClass('notVisible');
+                var _initLog = $('#initLog').val();
+                var _initPass = Sha256.hash($('#initPass').val());
+                $.ajax({
+                    url: startURL() + "Account/LoginForm",
+                    cache: false,
+                    data: {
+                        username: _initLog,
+                        password: _initPass
+                    },
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (data, statusLine) {
+                        $.each(data, function (i, rec) {
+                            if (rec.key == 'success') {
+                                if (rec.mes == '') rec.mes = _initLog;
+                                $('#logon').removeClass('notVisible').text('Ласкаво просимо, ' + rec.mes + '!');
+                                $('#fullAccess').html('<label>Вихід</label>');
+                                $('#tableLiga').addClass('notVisible');
+                                $('#divProviderLinks').attr('style', 'display: none');
+
+                                fr.css('display', 'none');
+                            }
+                            if (rec.key == 'error' && rec.mes == 'log/pass') {
+                                $('#initLog').prev().removeClass('notVisible').prev().removeClass('notVisible').text('Перевірте логін:').prev().addClass('notVisible').prev().addClass('notVisible');
+                                $('#initPass').prev().removeClass('notVisible').prev().removeClass('notVisible').text('Перевірте пароль:').prev().addClass('notVisible').prev().addClass('notVisible');
+                                $('#initLog').focus();
+                            }
+                            if (rec.key == 'error' && rec.mes != 'log/pass') {
+                                alert(key.mes);
+                            }
+                        });
+                    },
+                    error: function (e) {
+                        alert('Виникла непередбачувана та неконтрольована помилка [' + e.Message + ']!');
+                    }
+                });
+                //fr.css('display', 'none');
+            });
+
+            $('#initCancel').click(function () {
+                var fr = $('#init');
+                fr.css('display', 'none');
+            });
+
+            $('#aRemarks').click(function () {
+                backClick();
+            });
+
+            $('#backConnection').click(function () {
+                backClick();
+            });
+
+            function backClick() {
+                var fr = $('#back');
+                $('#backImage').attr('src', '/Image?id=' + (new Date()).getTime().toString());
+                fr.find('input:text').val('').prev().addClass('notVisible').prev().addClass('notVisible').addClass('redColor').prev().removeClass('notVisible').prev().removeClass('notVisible');
+                fr.find('textarea').val('').prev().addClass('notVisible').prev().addClass('notVisible').addClass('redColor').prev().removeClass('notVisible').prev().removeClass('notVisible');
+                fr.css('display', 'inline');
+                fr.css('left', ($(window).width() - fr.outerWidth()) / 2);
+                fr.css('top', $(window).scrollTop() + ($(window).height() - fr.outerHeight()) / 2);
+                fr.find('input:first').focus();
+            }
+            function CaptchaTestClick()
+            {
+
+                var _backWord = $('#backWord2').val();
+                $.ajax({
+                    url: startURL() + "Contact/Send",
+                    cache: false,
+                    data: {
+                        backWord: _backWord
+                    },
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (data, statusLine) {
+                        var suc = 0;
+                        var err = '';
+                        var inp;
+
+                        $.each(data, function (i, rec) {
+                            if (rec.key == "backWord") {
+                                suc = 1;
+                            }
+
+                        });
+
+                        if (suc == 0) {
+
+                            $('#login > form').submit();
+                            blockPage();
+                        }
+                        else {
+                            $('#backImage2').attr('src', '/Image?id=' + (new Date()).getTime().toString());
+                            $('#backWord2').val('');
+                            $("#captchaQuery").css('color', 'red');
+                        }
+                    },
+                    error: function () {
+                        alert('Виникла непередбачувана та неконтрольована помилка!');
+                    }
+                });
+                //fr.css('display', 'none');
+            }
+
+            $('#backWord2').keypress(function (e) {
+                var k = e.keyCode || e.which;
+                if (k == 13) {
+                    CaptchaTestClick();
+                    return false;
+                }
+            });
+
+            $('#modalcaptcha .searchbtn').click(CaptchaTestClick);
+
+
+            $('#backOk').click(function () {
+                var fr = $('#back');
+                fr.find('input:text').prev().addClass('notVisible').prev().addClass('notVisible').prev().removeClass('notVisible').prev().removeClass('notVisible');
+                fr.find('textarea').prev().addClass('notVisible').prev().addClass('notVisible').prev().removeClass('notVisible').prev().removeClass('notVisible');
+                var _backName = $('#backName').val();
+                var _backMail = $('#backMail').val();
+                var _backMessage = $('#backMessage').val();
+                var _backWord = $('#backWord').val();
+                $.ajax({
+                    url: startURL() + "Contact/Send",
+                    cache: false,
+                    data: {
+                        backName: _backName,
+                        backMail: _backMail,
+                        backMessage: _backMessage,
+                        backWord: _backWord
+                    },
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (data, statusLine) {
+                        var suc = '';
+                        var err = '';
+                        var inp;
+                        $.each(data, function (i, rec) {
+                            if (rec.key == 'success') {
+                                suc = rec.mes;
+                            }
+                            if (rec.key == 'error') {
+                                err = rec.mes;
+                            }
+                            if (rec.key == 'backName') {
+                                inp = $('#' + rec.key).prev().removeClass('notVisible').prev().removeClass('notVisible');
+                                if (rec.mes == 'Empty') {
+                                    inp.text("Поле для імені не може бути порожнім:");
+                                } else if (rec.mes == 'Small') {
+                                    inp.text("Поле для імені має бути змістовним:");
+                                }
+                                inp.prev().addClass('notVisible').prev().addClass('notVisible');
+                            }
+                            if (rec.key == 'backMail') {
+                                inp = $('#' + rec.key).prev().removeClass('notVisible').prev().removeClass('notVisible');
+                                if (rec.mes == 'Empty') {
+                                    inp.text("Поле для e-mail не може бути порожнім:");
+                                } else if (rec.mes == 'Incorrect') {
+                                    inp.text("Поле для e-mail має бути коректним:");
+                                }
+                                inp.prev().addClass('notVisible').prev().addClass('notVisible');
+                            }
+                            if (rec.key == 'backMessage') {
+                                inp = $('#' + rec.key).prev().removeClass('notVisible').prev().removeClass('notVisible');
+                                if (rec.mes == 'Empty') {
+                                    inp.text("Повідомлення не може бути порожнім:");
+                                } else if (rec.mes == 'Small') {
+                                    inp.text("Повідомлення має бути змістовним:");
+                                }
+                                inp.prev().addClass('notVisible').prev().addClass('notVisible');
+                            }
+                            if (rec.key == 'backWord') {
+                                inp = $('#' + rec.key).prev().removeClass('notVisible').prev().removeClass('notVisible');
+                                if (rec.mes == 'Empty') {
+                                    inp.text("Введіть в поле результат арифметичного виразу:");
+                                } else if (rec.mes == 'Incorrect') {
+                                    inp.text("Невірні символи, спробуйте ще раз:");
+                                }
+                                inp.prev().addClass('notVisible').prev().addClass('notVisible');
+                            }
+                        });
+                        if (suc != '') {
+                            fr.css('display', 'none');
+                            alert(suc);
+                        }
+                        if (err != '') {
+                            alert(err);
+                        }
+                    },
+                    error: function () {
+                        alert('Виникла непередбачувана та неконтрольована помилка!');
+                    }
+                });
+                //fr.css('display', 'none');
+            });
+
+            $('#backCancel').click(function () {
+                var fr = $('#back');
+                fr.css('display', 'none');
+            });
+
+            var bic = 10;
+            var cic = (new Date()).getTime();
+            var nr = String.fromCharCode(13) + String.fromCharCode(10);
+            $('#backImage').attr('title', 'Клікніть, щоб оновити малюнок!' + nr + 'Залишилось 10 спроб!');
+            $('#backImage').click(function () {
+                if (((new Date()).getTime() - cic) < 1000) { return; } else { cic = (new Date()).getTime(); }
+                --bic;
+                if (bic >= 0) $('#backImage').attr('src', '/Image?id=' + (new Date()).getTime().toString()).attr('title', (bic == 0) ? 'Ви використали усі спроби!' : ('Клікніть, щоб оновити малюнок!' + nr + 'Залишил' + ((bic == 1) ? 'а' : 'о') + 'сь ' + bic + ' ' + ((bic > 4) ? 'спроб' : ((bic == 1) ? 'спроба' : 'спроби')) + '!'));
+            });
+
+            $('body').css('visibility', 'visible');
+        });
+    });
+</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script type="text/javascript">
+    var gaJsHost = "https://www.";
+    document.write(unescape("%3Cscript src='" + gaJsHost + "googletagmanager.com/gtag/js?id=G-D5XE2RC1LW' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-D5XE2RC1LW');
+</script>
+
+<!--script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script!-->
+<!--script type="text/javascript">
+    try {
+        var pageTracker = _gat._getTracker("UA-33842633-1");
+        pageTracker._trackPageview();
+    } catch (err) { }
+</script!-->
+

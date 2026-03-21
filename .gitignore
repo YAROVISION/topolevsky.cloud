@@ -27,3 +27,7 @@ yarn-error.log*
 next-env.d.ts
 /lib/generated/prisma
 
+# custom ignores
+kcs-links.json
+/trash/
+/SPECIFICATION_PLAN/

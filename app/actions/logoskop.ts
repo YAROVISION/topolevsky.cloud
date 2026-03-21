@@ -1,36 +1,108 @@
 'use server'
 
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import Anthropic from '@anthropic-ai/sdk'
 import fs from 'fs'
 import path from 'path'
+import { searchKcsDecisions as searchQdrant } from '@/lib/qdrant'
+import { createEmbedding } from '@/lib/embeddings'
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || '')
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY || ''
+})
 
-export async function analyzeDocument(text: string, type: string) {
-	if (!process.env.GOOGLE_AI_API_KEY) {
-		throw new Error('GOOGLE_AI_API_KEY is not set')
-	}
+// Пошук релевантних рішень ККС через Qdrant
+async function searchKcsDecisions(text: string) {
+  const embedding = await createEmbedding(text)
+  return searchQdrant(embedding)
+}
 
-	let systemPrompt = ''
-	try {
-		const promptPath = path.join(process.cwd(), 'logic-system-prompt.md')
-		systemPrompt = fs.readFileSync(promptPath, 'utf8')
-	} catch (error) {
-		console.error('Failed to read system prompt file:', error)
-		throw new Error('System prompt configuration is missing')
-	}
+export async function analyzeDocument(
+  text: string,
+  type: string,
+  useKcs: boolean = false
+): Promise<{
+  analysis: string
+  sources: Array<{
+    caseNumber: string
+    date: string
+    url: string
+    score: number
+  }>
+}> {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    throw new Error('ANTHROPIC_API_KEY is not set')
+  }
 
-	try {
-		const model = genAI.getGenerativeModel({ model: 'gemini-3-flash-preview' })
-		const typeHint =
-			type !== 'auto' ? `\n\nТип документа вказано користувачем: ${type}` : ''
-		const prompt = `${systemPrompt}\n\nПроаналізуй наступний процесуальний документ кримінального провадження України:${typeHint}\n\n---\n${text}\n---`
+  // Вибираємо відповідний промпт Lexis залежно від типу аналізу (для платних чи безкоштовних)
+  let systemPrompt = ''
+  try {
+    const promptFilename = useKcs ? 'Lexis_deep_prompt.md' : 'Lexis_simple_prompt.md'
+    const promptPath = path.join(process.cwd(), 'docs', promptFilename)
+    systemPrompt = fs.readFileSync(promptPath, 'utf8')
+  } catch (error) {
+    throw new Error('Lexis prompt file is missing in docs/ directory')
+  }
 
-		const result = await model.generateContent(prompt)
-		const response = await result.response
-		return response.text()
-	} catch (error) {
-		console.error('Error in analyzeDocument:', error)
-		throw new Error('Failed to analyze document')
-	}
+  // Якщо увімкнений пошук по ККС — знаходимо релевантні рішення з Qdrant
+  let kcsContext = ''
+  let sources: Array<{
+    caseNumber: string
+    date: string
+    url: string
+    score: number
+  }> = []
+
+  if (useKcs) {
+    try {
+      const decisions = await searchKcsDecisions(text)
+      sources = decisions.map(d => ({
+        caseNumber: d.caseNumber,
+        date: d.date,
+        url: d.url,
+        score: d.score
+      }))
+
+      if (decisions.length > 0) {
+        kcsContext = `\n\n===ЕТАЛОННІ РІШЕННЯ ККС===\n${decisions
+          .map(
+            (d, i) =>
+              `ЕТАЛОН ${i + 1}\nСправа №${d.caseNumber} від ${d.date}\n${d.text}`
+          )
+          .join('\n---\n')}`
+      }
+    } catch (error) {
+      console.error('KCS search failed:', error)
+      // Продовжуємо без рішень ККС якщо пошук не вдався
+    }
+  }
+
+  const typeHint =
+    type !== 'auto'
+      ? `\n\nТип документа вказано користувачем: ${type}`
+      : ''
+
+  try {
+    const response = await client.messages.create({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 4000,
+      system: systemPrompt,
+      messages: [
+        {
+          role: 'user',
+          content: `Проаналізуй наступний процесуальний документ кримінального провадження України:${typeHint}${kcsContext}\n\n---\n${text}\n---`
+        }
+      ]
+    })
+
+    return {
+      analysis:
+        response.content[0].type === 'text'
+          ? response.content[0].text
+          : '',
+      sources
+    }
+  } catch (error) {
+    console.error('Error in analyzeDocument:', error)
+    throw new Error('Failed to analyze document')
+  }
 }

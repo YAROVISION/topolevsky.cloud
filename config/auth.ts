@@ -62,6 +62,36 @@ export const authConfig: AuthOptions = {
 		signIn: '/login'
 	},
 	callbacks: {
+		async signIn({ user, account, profile }) {
+			if (account?.provider === 'google' || account?.provider === 'apple') {
+				try {
+					// Перевіряємо, чи є вже такий користувач
+					const rows = await userQuery<any>(
+						'SELECT id FROM users WHERE email = ? LIMIT 1',
+						[user.email]
+					)
+
+					if (rows.length === 0) {
+						// Створюємо нового користувача
+						await userQuery(
+							'INSERT INTO users (email, name, avatarUrl) VALUES (?, ?, ?)',
+							[user.email, user.name || '', user.image || '']
+						)
+						console.log(`[Auth] New user created: ${user.email}`)
+					} else {
+						// Оновлюємо існуючого (наприклад, аватарку)
+						await userQuery(
+							'UPDATE users SET avatarUrl = ?, name = ? WHERE email = ?',
+							[user.image || '', user.name || '', user.email]
+						)
+						console.log(`[Auth] Existing user updated: ${user.email}`)
+					}
+				} catch (error) {
+					console.error('[Auth] Error in signIn callback:', error)
+				}
+			}
+			return true
+		},
 		async jwt({ token, user, trigger, session }) {
 			if (user) {
 				token.id = user.id

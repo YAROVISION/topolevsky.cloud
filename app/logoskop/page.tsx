@@ -36,6 +36,10 @@ export default function LogoskopPage() {
 	const [isAnalyzing, setIsAnalyzing] = useState(false)
 	const [result, setResult] = useState<string | null>(null)
 	const [isDownloading, setIsDownloading] = useState(false)
+	const [useKcs, setUseKcs] = useState(false)
+	const [kcsSources, setKcsSources] = useState<
+		Array<{ caseNumber: string; date: string; url: string; score: number }>
+	>([])
 	const resultsRef = useRef<HTMLDivElement>(null)
 	const printRef = useRef<HTMLDivElement>(null)
 
@@ -97,9 +101,20 @@ export default function LogoskopPage() {
 
 		setIsAnalyzing(true)
 		setResult(null)
+		setKcsSources([])
+
 		try {
-			const res = await analyzeDocument(input, selectedType)
-			setResult(res)
+			if (useKcs) {
+				toast.info('Пошук релевантних рішень ККС...')
+			}
+
+			const res = await analyzeDocument(input, selectedType, useKcs)
+			setResult(res.analysis)
+
+			if (res.sources && res.sources.length > 0) {
+				setKcsSources(res.sources)
+				toast.success(`Знайдено ${res.sources.length} рішень ККС`)
+			}
 		} catch (error) {
 			toast.error('Помилка аналізу. Спробуйте пізніше.')
 		} finally {
@@ -112,7 +127,7 @@ export default function LogoskopPage() {
 		setIsDownloading(true)
 		try {
 			const canvas = await html2canvas(printRef.current, {
-				backgroundColor: '#000000',
+				backgroundColor: '#ffffff',
 				scale: 2,
 				logging: false,
 				useCORS: true,
@@ -190,7 +205,7 @@ export default function LogoskopPage() {
 						<div className="mb-8">
 							<h1
 								className="text-4xl font-bold text-white mb-2"
-								style={{ fontFamily: 'var(--font-cal-sans)' }}
+								style={{ fontFamily: 'var(--font-cal-sans), sans-serif' }}
 							>
 								Логоскоп
 							</h1>
@@ -240,6 +255,29 @@ export default function LogoskopPage() {
 									value={input}
 									onChange={e => setInput(e.target.value)}
 								/>
+							</div>
+
+							<div className="flex items-center justify-between p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
+								<div className="mr-4">
+									<p className="text-xs uppercase tracking-widest text-zinc-200">
+										Порівняння з практикою ККС ВС
+									</p>
+									<p className="text-[11px] text-zinc-500 mt-1">
+										Автоматичний пошук релевантних рішень Касаційного суду
+									</p>
+								</div>
+								<button
+									onClick={() => setUseKcs(!useKcs)}
+									className={`relative w-12 h-6 rounded-full transition-colors duration-300 flex-shrink-0 ${
+										useKcs ? 'bg-emerald-500' : 'bg-zinc-700'
+									}`}
+								>
+									<span
+										className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 shadow-sm ${
+											useKcs ? 'left-1' : 'left-7'
+										}`}
+									/>
+								</button>
 							</div>
 
 							<Button
@@ -313,7 +351,7 @@ export default function LogoskopPage() {
 														<label className="text-[10px] uppercase tracking-[2px] text-zinc-500 mb-2 block">
 															Тип документа
 														</label>
-														<div className="text-zinc-200 font-medium">
+														<div className="text-zinc-200 font-medium text-sm whitespace-pre-wrap leading-relaxed">
 															{parseSection(result, 'ТИPDOC')}
 														</div>
 													</div>
@@ -323,7 +361,7 @@ export default function LogoskopPage() {
 														</label>
 														<div
 															className={`text-2xl font-bold leading-tight ${getScoreInfo(parseInt(parseSection(result, 'SCORE')) || 0).color}`}
-															style={{ fontFamily: 'var(--font-cal-sans)' }}
+															style={{ fontFamily: 'var(--font-cal-sans), sans-serif' }}
 														>
 															{parseSection(result, 'SCORE')}
 														</div>
@@ -344,6 +382,21 @@ export default function LogoskopPage() {
 												icon: <AlertCircle className="w-4 h-4" />
 											},
 											{
+												tag: 'УМОВЧАННЯ',
+												title: 'Аналіз умовчань',
+												icon: <AlertCircle className="w-4 h-4" />
+											},
+											{
+												tag: 'КОНТРФАКТИКА',
+												title: 'Контрфактичний аналіз',
+												icon: <ShieldAlert className="w-4 h-4" />
+											},
+											{
+												tag: 'МОВА',
+												title: 'Аналіз мови документа',
+												icon: <AlertCircle className="w-4 h-4" />
+											},
+											{
 												tag: 'ДОКАЗИ',
 												title: 'Аналіз доказової бази',
 												icon: <ShieldAlert className="w-4 h-4" />
@@ -352,6 +405,11 @@ export default function LogoskopPage() {
 												tag: 'КВАЛІФІКАЦІЯ',
 												title: 'Відповідність кваліфікації',
 												icon: <CheckCircle2 className="w-4 h-4" />
+											},
+											{
+												tag: 'ПРАКТИКА ККС',
+												title: 'Практика ККС ВС',
+												icon: <ShieldAlert className="w-4 h-4" />
 											},
 											{
 												tag: 'ОСКАРЖЕННЯ',
@@ -418,6 +476,42 @@ export default function LogoskopPage() {
 										})}
 									</Accordion>
 
+									{kcsSources.length > 0 && (
+										<div className="border border-zinc-800 bg-zinc-900/40 rounded-xl p-4">
+											<p className="text-[10px] uppercase tracking-[3px] text-emerald-500 mb-3">
+												Використані рішення ККС ВС
+											</p>
+											<div className="space-y-2">
+												{kcsSources.map((source, i) => (
+													<a
+														key={i}
+														href={source.url}
+														target="_blank"
+														rel="noopener noreferrer"
+														className="flex items-center justify-between p-3 bg-zinc-900 rounded-lg hover:bg-zinc-800 transition-colors group"
+													>
+														<div>
+															<p className="text-xs text-zinc-200">
+																Справа № {source.caseNumber}
+															</p>
+															<p className="text-[11px] text-zinc-500">
+																{source.date}
+															</p>
+														</div>
+														<div className="flex items-center gap-2">
+															<span className="text-[10px] text-emerald-500">
+																{Math.round(source.score * 100)}% збіг
+															</span>
+															<span className="text-zinc-600 group-hover:text-zinc-400">
+																→
+															</span>
+														</div>
+													</a>
+												))}
+											</div>
+										</div>
+									)}
+
 									<Button
 										onClick={downloadPDF}
 										disabled={isDownloading}
@@ -446,8 +540,8 @@ export default function LogoskopPage() {
 										ref={printRef}
 										style={{
 											width: '800px',
-											backgroundColor: '#000000',
-											color: '#ffffff',
+											backgroundColor: '#ffffff',
+											color: '#111827',
 											padding: '40px',
 											fontFamily: 'sans-serif'
 										}}
@@ -455,7 +549,7 @@ export default function LogoskopPage() {
 										<div style={{ marginBottom: '30px' }}>
 											<h1
 												style={{
-													color: '#10b981',
+													color: '#059669',
 													fontSize: '28px',
 													fontWeight: 'bold',
 													textTransform: 'uppercase',
@@ -465,17 +559,17 @@ export default function LogoskopPage() {
 											>
 												Звіт LexLogic Analyzer
 											</h1>
-											<p style={{ color: '#71717a', fontSize: '12px' }}>
+											<p style={{ color: '#4b5563', fontSize: '12px' }}>
 												Дата аналізу: {new Date().toLocaleDateString('uk-UA')}
 											</p>
 										</div>
 
 										<div
 											style={{
-												border: '1px solid #27272a',
+												border: '1px solid #e5e7eb',
 												borderRadius: '12px',
 												padding: '24px',
-												backgroundColor: '#09090b',
+												backgroundColor: '#f9fafb',
 												marginBottom: '30px'
 											}}
 										>
@@ -489,7 +583,7 @@ export default function LogoskopPage() {
 												<div>
 													<label
 														style={{
-															color: '#71717a',
+															color: '#4b5563',
 															fontSize: '10px',
 															textTransform: 'uppercase',
 															display: 'block',
@@ -499,7 +593,7 @@ export default function LogoskopPage() {
 														Тип документа
 													</label>
 													<div
-														style={{ color: '#ffffff', fontWeight: 'medium' }}
+														style={{ color: '#111827', fontWeight: 'medium', whiteSpace: 'pre-wrap' }}
 													>
 														{parseSection(result, 'ТИPDOC')}
 													</div>
@@ -507,7 +601,7 @@ export default function LogoskopPage() {
 												<div>
 													<label
 														style={{
-															color: '#71717a',
+															color: '#4b5563',
 															fontSize: '10px',
 															textTransform: 'uppercase',
 															display: 'block',
@@ -518,7 +612,7 @@ export default function LogoskopPage() {
 													</label>
 													<div
 														style={{
-															color: '#10b981',
+															color: '#059669',
 															fontSize: '24px',
 															fontWeight: 'bold'
 														}}
@@ -552,10 +646,10 @@ export default function LogoskopPage() {
 												<div
 													key={s.tag}
 													style={{
-														border: '1px solid #27272a',
+														border: '1px solid #e5e7eb',
 														borderRadius: '12px',
 														padding: '20px',
-														backgroundColor: '#09090b',
+														backgroundColor: '#f9fafb',
 														marginBottom: '15px'
 													}}
 												>
@@ -565,13 +659,13 @@ export default function LogoskopPage() {
 															alignItems: 'center',
 															gap: '12px',
 															marginBottom: '15px',
-															borderBottom: '1px solid #27272a',
+															borderBottom: '1px solid #e5e7eb',
 															paddingBottom: '10px'
 														}}
 													>
 														<span
 															style={{
-																color: '#10b981',
+																color: '#059669',
 																fontFamily: 'monospace',
 																fontSize: '12px'
 															}}
@@ -580,7 +674,7 @@ export default function LogoskopPage() {
 														</span>
 														<span
 															style={{
-																color: '#ffffff',
+																color: '#111827',
 																fontSize: '12px',
 																textTransform: 'uppercase',
 																letterSpacing: '1px',
@@ -592,7 +686,7 @@ export default function LogoskopPage() {
 													</div>
 													<div
 														style={{
-															color: '#a1a1aa',
+															color: '#374151',
 															fontSize: '13px',
 															lineHeight: '1.6',
 															whiteSpace: 'pre-wrap'
@@ -607,10 +701,10 @@ export default function LogoskopPage() {
 										<div
 											style={{
 												marginTop: '40px',
-												borderTop: '1px solid #27272a',
+												borderTop: '1px solid #e5e7eb',
 												paddingTop: '20px',
 												textAlign: 'center',
-												color: '#71717a',
+												color: '#4b5563',
 												fontSize: '10px'
 											}}
 										>

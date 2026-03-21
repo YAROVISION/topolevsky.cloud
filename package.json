@@ -3,18 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.78.0",
     "@emotion/is-prop-valid": "latest",
     "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^3.10.0",
     "@nuxt/kit": "latest",
     "@prisma/extension-accelerate": "^3.0.1",
+    "@qdrant/js-client-rest": "^1.17.0",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
     "@radix-ui/react-aspect-ratio": "1.1.1",
@@ -75,6 +76,7 @@
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.2",
+    "voyageai": "^0.2.1",
     "zod": "3.25.76"
   },
   "devDependencies": {

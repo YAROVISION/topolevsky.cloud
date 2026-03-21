@@ -24,6 +24,7 @@ model User {
   password      String? // null якщо вхід через OAuth
 
   role     Role    @default(CLIENT)
+  subscriptionTier SubscriptionTier @default(FREE)
   isActive Boolean @default(true)
 
   createdAt DateTime @default(now())
@@ -155,4 +156,10 @@ enum Gender {
   MALE
   FEMALE
   OTHER
+}
+
+enum SubscriptionTier {
+  FREE
+  PRO
+  SPECIAL
 }
