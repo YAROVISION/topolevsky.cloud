@@ -26,22 +26,63 @@ import {
 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 export default function LogoskopPage() {
 	const { data: session, status } = useSession()
-	const [input, setInput] = useState('')
-	const [selectedType, setSelectedType] = useState('auto')
+	const [criminalInput, setCriminalInput] = useState('')
+	const [adminInput, setAdminInput] = useState('')
+	const [criminalType, setCriminalType] = useState('auto')
+	const [adminType, setAdminType] = useState('auto')
 	const [isAnalyzing, setIsAnalyzing] = useState(false)
-	const [result, setResult] = useState<string | null>(null)
+	const [criminalResult, setCriminalResult] = useState<string | null>(null)
+	const [adminResult, setAdminResult] = useState<string | null>(null)
 	const [isDownloading, setIsDownloading] = useState(false)
-	const [useKcs, setUseKcs] = useState(false)
-	const [kcsSources, setKcsSources] = useState<
+	const [criminalUseKcs, setCriminalUseKcs] = useState(false)
+	const [adminUseKcs, setAdminUseKcs] = useState(false)
+	const [criminalSources, setCriminalSources] = useState<
+		Array<{ caseNumber: string; date: string; url: string; score: number }>
+	>([])
+	const [adminSources, setAdminSources] = useState<
 		Array<{ caseNumber: string; date: string; url: string; score: number }>
 	>([])
 	const resultsRef = useRef<HTMLDivElement>(null)
 	const printRef = useRef<HTMLDivElement>(null)
+
+	const [activeMainTab, setActiveMainTab] = useState('criminal')
+
+	// Getters for current state based on active tab
+	const input = activeMainTab === 'criminal' ? criminalInput : adminInput
+	const setInput = activeMainTab === 'criminal' ? setCriminalInput : setAdminInput
+	const selectedType = activeMainTab === 'criminal' ? criminalType : adminType
+	const setSelectedType = activeMainTab === 'criminal' ? setCriminalType : setAdminType
+	const result = activeMainTab === 'criminal' ? criminalResult : adminResult
+	const setResult = activeMainTab === 'criminal' ? setCriminalResult : setAdminResult
+	const useKcs = activeMainTab === 'criminal' ? criminalUseKcs : adminUseKcs
+	const setUseKcs = activeMainTab === 'criminal' ? setCriminalUseKcs : setAdminUseKcs
+	const kcsSources = activeMainTab === 'criminal' ? criminalSources : adminSources
+	const setKcsSources = activeMainTab === 'criminal' ? setCriminalSources : setAdminSources
+
+	const CRIMINAL_TYPES = [
+		{ id: 'auto', label: 'Автовизначення' },
+		{ id: 'suspicion', label: 'Підозра' },
+		{ id: 'verdict', label: 'Вирок' },
+		{ id: 'act', label: 'Обвинувальний акт' },
+		{ id: 'ruling', label: 'Ухвала' }
+	]
+
+	const ADMINISTRATIVE_TYPES = [
+		{ id: 'auto', label: 'Автовизначення' },
+		{ id: 'claim', label: 'Адм.позов' },
+		{ id: 'decision', label: 'Рішення суду' },
+		{ id: 'appeal', label: 'Апеляційна скарга' },
+		{ id: 'cassation', label: 'Касаційна скарга' },
+		{ id: 'response', label: 'Відзив' },
+		{ id: 'ruling_admin', label: 'Ухвала суду' }
+	]
+
+	// No longer need to reset selectedType here, as they are isolated
 
 	if (status === 'loading') {
 		return (
@@ -90,30 +131,117 @@ export default function LogoskopPage() {
 	}
 
 	const handleAnalyze = async () => {
-		if (!input.trim()) {
+		const targetTab = activeMainTab
+		const targetInput = input
+		const targetType = selectedType
+		const targetUseKcs = useKcs
+
+		if (!targetInput.trim()) {
 			toast.error('Будь ласка, вставте текст документа')
 			return
 		}
-		if (input.length < 100) {
+		if (targetInput.length < 100) {
 			toast.error('Текст занадто короткий для якісного аналізу')
 			return
 		}
 
 		setIsAnalyzing(true)
-		setResult(null)
-		setKcsSources([])
+		// Clear results for the target tab
+		if (targetTab === 'criminal') {
+			setCriminalResult(null)
+			setCriminalSources([])
+		} else {
+			setAdminResult(null)
+			setAdminSources([])
+		}
 
 		try {
-			if (useKcs) {
-				toast.info('Пошук релевантних рішень ККС...')
+			if (targetUseKcs) {
+				toast.info(`Пошук релевантних рішень ${targetTab === 'criminal' ? 'ККС' : 'КАС'}...`)
 			}
 
-			const res = await analyzeDocument(input, selectedType, useKcs)
-			setResult(res.analysis)
+			const res = await analyzeDocument(
+				targetInput,
+				targetType,
+				targetUseKcs,
+				targetTab
+			)
+
+			if (targetTab === 'criminal') {
+				setCriminalResult(res.analysis)
+			} else {
+				setAdminResult(res.analysis)
+			}
+
+			// Автоматично перемикаємо вкладку на визначений тип документа
+			if (targetType === 'auto') {
+				const detectedType = parseSection(res.analysis, 'ТИPDOC').toLowerCase()
+
+				if (targetTab === 'criminal') {
+					if (
+						detectedType.includes('вирок') ||
+						detectedType.includes('verdict')
+					) {
+						setCriminalType('verdict')
+					} else if (
+						detectedType.includes('підозр') ||
+						detectedType.includes('suspicion')
+					) {
+						setCriminalType('suspicion')
+					} else if (
+						detectedType.includes('обвинувал') ||
+						detectedType.includes('act')
+					) {
+						setCriminalType('act')
+					} else if (
+						detectedType.includes('ухвал') ||
+						detectedType.includes('ruling')
+					) {
+						setCriminalType('ruling')
+					}
+				} else {
+					// Administrative detection mapping
+					if (
+						detectedType.includes('позов') ||
+						detectedType.includes('claim')
+					) {
+						setAdminType('claim')
+					} else if (
+						detectedType.includes('рішення') ||
+						detectedType.includes('decision')
+					) {
+						setAdminType('decision')
+					} else if (
+						detectedType.includes('апеляцій') ||
+						detectedType.includes('appeal')
+					) {
+						setAdminType('appeal')
+					} else if (
+						detectedType.includes('касацій') ||
+						detectedType.includes('cassation')
+					) {
+						setAdminType('cassation')
+					} else if (
+						detectedType.includes('відзив') ||
+						detectedType.includes('response')
+					) {
+						setAdminType('response')
+					} else if (
+						detectedType.includes('ухвал') ||
+						detectedType.includes('ruling')
+					) {
+						setAdminType('ruling_admin')
+					}
+				}
+			}
 
 			if (res.sources && res.sources.length > 0) {
-				setKcsSources(res.sources)
-				toast.success(`Знайдено ${res.sources.length} рішень ККС`)
+				if (targetTab === 'criminal') {
+					setCriminalSources(res.sources)
+				} else {
+					setAdminSources(res.sources)
+				}
+				toast.success(`Знайдено ${res.sources.length} рішень ${targetTab === 'criminal' ? 'ККС' : 'КАС'}`)
 			}
 		} catch (error) {
 			toast.error('Помилка аналізу. Спробуйте пізніше.')
@@ -202,18 +330,53 @@ export default function LogoskopPage() {
 
 				<section className="pt-28 pb-20 px-4">
 					<div className="max-w-4xl mx-auto">
-						<div className="mb-8">
+						<div className="mb-12 text-left">
 							<h1
-								className="text-4xl font-bold text-white mb-2"
+								className="text-5xl font-bold text-white mb-8"
 								style={{ fontFamily: 'var(--font-cal-sans), sans-serif' }}
 							>
 								Логоскоп
 							</h1>
-							<p className="text-zinc-400">
-								Аналіз процесуальних документів кримінального провадження за КПК
-								України.
-							</p>
+
+							<Tabs
+								value={activeMainTab}
+								onValueChange={setActiveMainTab}
+								className="w-full max-w-md"
+							>
+								<TabsList className="bg-zinc-900 border border-zinc-800 p-1 w-full grid grid-cols-2 h-12">
+									<TabsTrigger
+										value="criminal"
+										className="text-xs uppercase tracking-widest justify-start px-6 data-[state=active]:bg-emerald-500 data-[state=active]:text-black"
+									>
+										Кримінальне
+									</TabsTrigger>
+									<TabsTrigger
+										value="administrative"
+										className="text-xs uppercase tracking-widest justify-start px-6 data-[state=active]:bg-emerald-500 data-[state=active]:text-black"
+									>
+										Адміністративне
+									</TabsTrigger>
+								</TabsList>
+							</Tabs>
 						</div>
+
+						{activeMainTab === 'criminal' ? (
+							<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+								<p className="text-zinc-400 mb-8 text-left max-w-2xl">
+									Професійний аналіз процесуальних документів кримінального
+									провадження за КПК України з використанням ШІ та актуальної
+									практики Верховного Суду.
+								</p>
+							</div>
+						) : (
+							<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+								<p className="text-zinc-400 mb-8 text-left max-w-2xl">
+									Професійний аналіз документів адміністративного судочинства за
+									КАС України з використанням ШІ та актуальної практики
+									Верховного Суду.
+								</p>
+							</div>
+						)}
 
 						<div className="space-y-6">
 							<div>
@@ -221,22 +384,19 @@ export default function LogoskopPage() {
 									Тип документа
 								</label>
 								<Tabs
-									defaultValue="auto"
+									value={selectedType}
 									onValueChange={setSelectedType}
 									className="w-full"
 								>
 									<TabsList className="bg-zinc-900 border border-zinc-800 p-1 h-auto flex-wrap justify-start">
-										{[
-											{ id: 'auto', label: 'Автовизначення' },
-											{ id: 'suspicion', label: 'Підозра' },
-											{ id: 'verdict', label: 'Вирок' },
-											{ id: 'act', label: 'Обвинувальний акт' },
-											{ id: 'ruling', label: 'Ухвала' }
-										].map(t => (
+										{(activeMainTab === 'criminal'
+											? CRIMINAL_TYPES
+											: ADMINISTRATIVE_TYPES
+										).map(t => (
 											<TabsTrigger
 												key={t.id}
 												value={t.id}
-												className="px-4 py-2 text-xs uppercase tracking-wider data-[state=active]:bg-emerald-500 data-[state=active]:text-black"
+												className="px-4 py-2 text-xs uppercase tracking-wider justify-start data-[state=active]:bg-emerald-500 data-[state=active]:text-black"
 											>
 												{t.label}
 											</TabsTrigger>
@@ -258,12 +418,15 @@ export default function LogoskopPage() {
 							</div>
 
 							<div className="flex items-center justify-between p-4 bg-zinc-900/50 border border-zinc-800 rounded-xl">
-								<div className="mr-4">
+								<div className="mr-4 text-left">
 									<p className="text-xs uppercase tracking-widest text-zinc-200">
-										Порівняння з практикою ККС ВС
+										{activeMainTab === 'criminal'
+											? 'Порівняння з практикою ККС ВС'
+											: 'Порівняння з практикою КАС ВС'}
 									</p>
 									<p className="text-[11px] text-zinc-500 mt-1">
-										Автоматичний пошук релевантних рішень Касаційного суду
+										Автоматичний пошук релевантних рішень{' '}
+										{activeMainTab === 'criminal' ? 'ККС' : 'КАС'} ВС
 									</p>
 								</div>
 								<button
@@ -283,7 +446,7 @@ export default function LogoskopPage() {
 							<Button
 								onClick={handleAnalyze}
 								disabled={isAnalyzing}
-								className="w-full py-6 text-sm uppercase tracking-[3px] bg-transparent border border-emerald-500 text-emerald-500 hover:bg-emerald-500 hover:text-black transition-all group"
+								className="w-full py-6 text-sm uppercase tracking-[3px] bg-transparent border border-emerald-500 text-emerald-500 hover:bg-emerald-500 hover:text-black transition-all group justify-start px-12"
 							>
 								{isAnalyzing ? (
 									<>
@@ -407,8 +570,8 @@ export default function LogoskopPage() {
 												icon: <CheckCircle2 className="w-4 h-4" />
 											},
 											{
-												tag: 'ПРАКТИКА ККС',
-												title: 'Практика ККС ВС',
+												tag: activeMainTab === 'criminal' ? 'ПРАКТИКА ККС' : 'ПРАКТИКА КАС',
+												title: activeMainTab === 'criminal' ? 'Практика ККС ВС' : 'Практика КАС ВС',
 												icon: <ShieldAlert className="w-4 h-4" />
 											},
 											{
@@ -557,7 +720,7 @@ export default function LogoskopPage() {
 													marginBottom: '10px'
 												}}
 											>
-												Звіт LexLogic Analyzer
+												Звіт Lexis Analyzer
 											</h1>
 											<p style={{ color: '#4b5563', fontSize: '12px' }}>
 												Дата аналізу: {new Date().toLocaleDateString('uk-UA')}
@@ -703,12 +866,12 @@ export default function LogoskopPage() {
 												marginTop: '40px',
 												borderTop: '1px solid #e5e7eb',
 												paddingTop: '20px',
-												textAlign: 'center',
+												textAlign: 'left',
 												color: '#4b5563',
 												fontSize: '10px'
 											}}
 										>
-											LexLogic Analyzer • Автоматизований звіт •{' '}
+											Lexis Analyzer • Автоматизований звіт •{' '}
 											{new Date().getFullYear()}
 										</div>
 									</div>

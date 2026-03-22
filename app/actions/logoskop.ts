@@ -17,7 +17,8 @@ async function searchKcsDecisions(text: string) {
 export async function analyzeDocument(
   text: string,
   type: string,
-  useKcs: boolean = false
+  useKcs: boolean = false,
+  mainTab: string = 'criminal'
 ): Promise<{
   analysis: string
   sources: Array<{
@@ -31,10 +32,17 @@ export async function analyzeDocument(
     throw new Error('GOOGLE_AI_API_KEY or GOOGLE_API_KEY is not set')
   }
 
-  // Вибираємо відповідний промпт Lexis залежно від типу аналізу (для платних чи безкоштовних)
+  const isCriminal = mainTab === 'criminal'
+  const sectorName = isCriminal ? 'кримінального' : 'адміністративного'
+
+  // Вибираємо відповідний промпт Lexis залежно від типу аналізу
   let systemPrompt = ''
   try {
-    const promptFilename = useKcs ? 'Lexis_deep_prompt.md' : 'Lexis_simple_prompt.md'
+    const promptFilename = useKcs
+      ? (isCriminal ? 'Lexis_deep_prompt.md' : 'Lexis_admin_deep_prompt.md')
+      : isCriminal
+        ? 'Lexis_simple_prompt.md'
+        : 'Lexis_admin_simple_prompt.md'
     const promptPath = path.join(process.cwd(), 'docs', promptFilename)
     systemPrompt = fs.readFileSync(promptPath, 'utf8')
   } catch (error) {
@@ -61,7 +69,8 @@ export async function analyzeDocument(
       }))
 
       if (decisions.length > 0) {
-        kcsContext = `\n\n===ЕТАЛОННІ РІШЕННЯ ККС===\n${decisions
+        const sectorPrefix = isCriminal ? 'ККС' : 'КАС'
+        kcsContext = `\n\n===ЕТАЛОННІ РІШЕННЯ ${sectorPrefix}===\n${decisions
           .map(
             (d, i) =>
               `ЕТАЛОН ${i + 1}\nСправа №${d.caseNumber} від ${d.date}\n${d.text}`
@@ -69,8 +78,7 @@ export async function analyzeDocument(
           .join('\n---\n')}`
       }
     } catch (error) {
-      console.error('KCS search failed:', error)
-      // Продовжуємо без рішень ККС якщо пошук не вдався
+      console.error('KCS/KAS search failed:', error)
     }
   }
 
@@ -81,8 +89,8 @@ export async function analyzeDocument(
 
   try {
     const model = genAI.getGenerativeModel({
-      model: 'gemini-2.5-pro',
-      systemInstruction: systemPrompt + '\n\nТи — професійний юрист. Проведи логічний аналіз наступного судового вироку. Текст містить описи правопорушень, що є частиною справи. Працюй виключно в межах юридичного аналізу.',
+      model: 'gemini-pro-latest',
+      systemInstruction: systemPrompt + `\n\nТи — професійний юрист. Проведи логічний аналіз наступного документа ${sectorName} провадження. Працюй виключно в межах юридичного аналізу.`,
       safetySettings: [
         {
           category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -103,7 +111,7 @@ export async function analyzeDocument(
       ]
     })
 
-    const prompt = `Проаналізуй наступний процесуальний документ кримінального провадження України:${typeHint}${kcsContext}\n\n---\n${text}\n---`
+    const prompt = `Проаналізуй наступний процесуальний документ ${sectorName} провадження України:${typeHint}${kcsContext}\n\n---\n${text}\n---`
 
     const result = await model.generateContent(prompt)
     const response = await result.response
