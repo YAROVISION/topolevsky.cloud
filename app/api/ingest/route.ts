@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { addDecision, initCollection } from '@/lib/qdrant'
+import { addDecision, initCollection, detectCategory } from '@/lib/qdrant'
 import { createEmbedding } from '@/lib/embeddings'
 import { randomUUID } from 'crypto'
 
@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
         vector: vector,
         payload: {
           caseNumber: d.caseNumber,
+          category: detectCategory(d.caseNumber),
           date: d.date,
           url: d.url,
           text: d.text
@@ -133,6 +134,7 @@ export async function PUT(req: NextRequest) {
 
     await addDecision(randomUUID(), vector, {
       caseNumber,
+      category: detectCategory(caseNumber),
       date,
       url,
       text

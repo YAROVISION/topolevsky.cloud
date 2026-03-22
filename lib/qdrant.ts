@@ -9,6 +9,36 @@ export const qdrant = new QdrantClient({
 
 export const COLLECTION_NAME = 'kcs_decisions'
 
+/**
+ * Визначає категорію за номером справи
+ */
+export function detectCategory(caseNumber: string): string {
+  if (!caseNumber) return 'unknown'
+  const clean = caseNumber.toLowerCase().trim()
+  
+  // 1. Прямі суфікси (найнадійніші)
+  if (clean.endsWith('-а') || clean.includes('/а-') || clean.includes(' 2-а')) return 'administrative'
+  if (clean.endsWith('-к') || clean.startsWith('1-')) return 'criminal'
+  if (clean.endsWith('-ц') || clean.startsWith('2-')) return 'civil'
+
+  // 2. Коди судів (перші цифри до першої скісної /)
+  const prefix = clean.split('/')[0]
+  
+  // Типові коди окружних адміністративних судів
+  const adminCodes = [
+    '120', '140', '160', '200', '240', '280', '320', '380', '400', '420', 
+    '440', '460', '480', '500', '520', '540', '560', '580', '600', '620', 
+    '640', '801', '802', '803', '804', '805', '806', '807', '808', '809', 
+    '810', '811', '812', '813', '814', '815', '816', '817', '818', '819', 
+    '820', '821', '822', '823', '824', '825', '826', '990', '991', '1570', '2602'
+  ]
+  
+  if (adminCodes.includes(prefix)) return 'administrative'
+  
+  // За замовчуванням для цієї колекції вважаємо кримінальним
+  return 'criminal'
+}
+
 // Ініціалізація колекції (викликати один раз)
 export async function initCollection() {
   const { PROVIDERS, getActiveProvider } = require('./embeddings')
@@ -42,10 +72,16 @@ export async function initCollection() {
 // Всі дані повертаються прямо з Qdrant — MySQL не потрібна
 export async function searchKcsDecisions(
   queryVector: number[],
-  limit: number = 5
+  limit: number = 5,
+  category?: string
 ) {
+  const filter = category && category !== 'unknown' 
+    ? { must: [{ key: 'category', match: { value: category } }] }
+    : undefined
+
   const results = await qdrant.search(COLLECTION_NAME, {
     vector: queryVector,
+    filter,
     limit,
     with_payload: true
   })
@@ -66,6 +102,7 @@ export async function addDecision(
   vector: number[],
   payload: {
     caseNumber: string
+    category: string
     date: string
     url: string
     text: string

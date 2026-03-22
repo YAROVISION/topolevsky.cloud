@@ -9,9 +9,9 @@ import { createEmbedding } from '@/lib/embeddings'
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || process.env.GOOGLE_API_KEY || '')
 
 // Пошук релевантних рішень ККС через Qdrant
-async function searchKcsDecisions(text: string) {
+async function searchKcsDecisions(text: string, limit: number = 5, category?: string) {
   const embedding = await createEmbedding(text)
-  return searchQdrant(embedding)
+  return searchQdrant(embedding, limit, category)
 }
 
 export async function analyzeDocument(
@@ -60,7 +60,7 @@ export async function analyzeDocument(
 
   if (useKcs) {
     try {
-      const decisions = await searchKcsDecisions(text)
+      const decisions = await searchKcsDecisions(text, 5, isCriminal ? 'criminal' : 'administrative')
       sources = decisions.map(d => ({
         caseNumber: d.caseNumber,
         date: d.date,
