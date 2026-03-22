@@ -1,5 +1,4 @@
 import { Providers } from '@/components/providers'
-import { Analytics } from '@vercel/analytics/next'
 import type { Metadata } from 'next'
 import { Manrope } from 'next/font/google'
 import localFont from 'next/font/local'
@@ -60,7 +59,6 @@ export default function RootLayout({
 					/>
 					{children}
 					<Toaster />
-					<Analytics />
 				</Providers>
 			</body>
 		</html>
