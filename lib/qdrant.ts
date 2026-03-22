@@ -1,8 +1,10 @@
 import { QdrantClient } from '@qdrant/js-client-rest'
 
 export const qdrant = new QdrantClient({
-  url: process.env.QDRANT_URL || 'http://localhost:6333',
-  apiKey: process.env.QDRANT_API_KEY
+  url: process.env.QDRANT_URL || 'https://qdrant.lexis.blog',
+  apiKey: process.env.QDRANT_API_KEY,
+  port: 443,
+  checkCompatibility: false
 })
 
 export const COLLECTION_NAME = 'kcs_decisions'
