@@ -1,8 +1,8 @@
 import { userQuery } from '@/lib/users-db'
 import bcrypt from 'bcryptjs'
 import type { AuthOptions } from 'next-auth'
-import AppleProvider from 'next-auth/providers/apple'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import FacebookProvider from 'next-auth/providers/facebook'
 import GoogleProvider from 'next-auth/providers/google'
 
 export const authConfig: AuthOptions = {
@@ -11,9 +11,14 @@ export const authConfig: AuthOptions = {
 			clientId: process.env.GOOGLE_CLIENT_ID!,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET!
 		}),
-		AppleProvider({
-			clientId: process.env.APPLE_ID!,
-			clientSecret: process.env.APPLE_SECRET!
+		FacebookProvider({
+			clientId: process.env.FACEBOOK_APP_ID!,
+			clientSecret: process.env.FACEBOOK_APP_SECRET!,
+			authorization: {
+				params: {
+					scope: 'email,public_profile'
+				}
+			}
 		}),
 		CredentialsProvider({
 			name: 'Credentials',
@@ -63,7 +68,7 @@ export const authConfig: AuthOptions = {
 	},
 	callbacks: {
 		async signIn({ user, account, profile }) {
-			if (account?.provider === 'google' || account?.provider === 'apple') {
+			if (account?.provider === 'google' || account?.provider === 'facebook') {
 				try {
 					// Перевіряємо, чи є вже такий користувач
 					const rows = await userQuery<any>(
@@ -92,7 +97,11 @@ export const authConfig: AuthOptions = {
 			}
 			return true
 		},
-		async jwt({ token, user, trigger, session }) {
+		async jwt({ token, user, trigger, session, account, profile }) {
+			if (account?.provider === 'facebook' && profile) {
+				token.image = `https://graph.facebook.com/${(profile as any).id || (profile as any).sub}/picture?type=large`
+			}
+
 			if (user) {
 				token.id = user.id
 				token.phone = (user as any).phone
