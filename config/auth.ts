@@ -32,7 +32,7 @@ export const authConfig: AuthOptions = {
 				}
 
 				const rows = await userQuery<any>(
-					'SELECT id, email, name, phone, avatarUrl, password FROM users WHERE email = ? LIMIT 1',
+					'SELECT id, email, name, phone, avatarUrl, password, role, subscriptionTier FROM users WHERE email = ? LIMIT 1',
 					[credentials.email]
 				)
 				const user = rows[0]
@@ -55,7 +55,9 @@ export const authConfig: AuthOptions = {
 					email: user.email,
 					name: user.name,
 					phone: user.phone,
-					image: user.avatarUrl
+					image: user.avatarUrl,
+					role: user.role,
+					subscriptionTier: user.subscriptionTier
 				}
 			}
 		})
@@ -98,35 +100,45 @@ export const authConfig: AuthOptions = {
 			return true
 		},
 		async jwt({ token, user, trigger, session, account, profile }) {
-			if (account?.provider === 'facebook' && profile) {
-				token.image = `https://graph.facebook.com/${(profile as any).id || (profile as any).sub}/picture?type=large`
-			}
-
-			if (user) {
-				token.id = user.id
-				token.phone = (user as any).phone
-				token.image = (user as any).image || (user as any).avatarUrl
-			}
-
-			// Оновлюємо дані з бази, якщо це необхідно (наприклад, для Google входу)
-			if (!token.phone && token.email) {
-				const rows = await userQuery<any>(
-					'SELECT id, phone, avatarUrl FROM users WHERE email = ? LIMIT 1',
-					[token.email]
-				)
-				const dbUser = rows[0]
-				if (dbUser) {
-					token.id = dbUser.id
-					token.phone = dbUser.phone
-					if (dbUser.avatarUrl) token.image = dbUser.avatarUrl
+			try {
+				if (account?.provider === 'facebook' && profile) {
+					token.image = `https://graph.facebook.com/${(profile as any).id || (profile as any).sub}/picture?type=large`
 				}
-			}
 
-			if (trigger === 'update' && session) {
-				if (session.phone) token.phone = session.phone
-				if (session.name) token.name = session.name
-				if (session.email) token.email = session.email
-				if (session.image) token.image = session.image
+				if (user) {
+					token.id = user.id
+					token.phone = (user as any).phone
+					token.image = (user as any).image || (user as any).avatarUrl
+					token.role = (user as any).role || 'CLIENT'
+					token.subscriptionTier = (user as any).subscriptionTier || 'FREE'
+					console.log(`[Auth] JWT Init for ${token.email}: role=${token.role}`)
+				}
+
+				// Оновлюємо дані з бази, якщо це необхідно
+				if (token.email) {
+					const rows = await userQuery<any>(
+						'SELECT id, phone, avatarUrl, role, subscriptionTier FROM users WHERE email = ? LIMIT 1',
+						[token.email]
+					)
+					const dbUser = rows[0]
+					if (dbUser) {
+						token.id = dbUser.id
+						token.phone = dbUser.phone
+						token.role = dbUser.role || 'CLIENT'
+						token.subscriptionTier = dbUser.subscriptionTier || 'FREE'
+						if (dbUser.avatarUrl) token.image = dbUser.avatarUrl
+						console.log(`[Auth] JWT Refresh from DB for ${token.email}: role=${token.role}`)
+					}
+				}
+
+				if (trigger === 'update' && session) {
+					if (session.phone) token.phone = session.phone
+					if (session.name) token.name = session.name
+					if (session.email) token.email = session.email
+					if (session.image) token.image = session.image
+				}
+			} catch (error) {
+				console.error('[Auth] Error in jwt callback:', error)
 			}
 
 			return token
@@ -136,6 +148,8 @@ export const authConfig: AuthOptions = {
 				session.user.id = token.id as string
 				session.user.phone = token.phone as string | null
 				session.user.image = token.image as string | null
+				session.user.role = token.role as string
+				session.user.subscriptionTier = token.subscriptionTier as string
 			}
 			return session
 		}
