@@ -5,10 +5,14 @@ import { motion, useInView } from 'framer-motion'
 import { ArrowRight, Book } from 'lucide-react'
 import Link from 'next/link'
 import { useRef } from 'react'
+import { useSession } from 'next-auth/react'
 
 export function FinalCTA() {
+	const { data: session, status } = useSession()
 	const ref = useRef(null)
 	const isInView = useInView(ref, { once: true, margin: '-100px' })
+	
+	const isAuthenticated = status === 'authenticated'
 
 	return (
 		<section className="py-24 px-4">
@@ -40,15 +44,26 @@ export function FinalCTA() {
 				</div>
 
 				<div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-					<Link href="/signup">
+					{isAuthenticated ? (
 						<Button
 							size="lg"
-							className="shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200 rounded-full px-8 h-14 text-base font-medium shadow-lg shadow-white/20"
+							disabled
+							className="bg-zinc-800 text-zinc-500 cursor-not-allowed rounded-full px-8 h-14 text-base font-medium opacity-50 transition-all duration-300"
 						>
 							Створити акаунт
 							<ArrowRight className="ml-2 w-5 h-5" />
 						</Button>
-					</Link>
+					) : (
+						<Link href="/signup">
+							<Button
+								size="lg"
+								className="shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200 rounded-full px-8 h-14 text-base font-medium shadow-lg shadow-white/20"
+							>
+								Створити акаунт
+								<ArrowRight className="ml-2 w-5 h-5" />
+							</Button>
+						</Link>
+					)}
 					<Link href="/docs">
 						<Button
 							variant="outline"
