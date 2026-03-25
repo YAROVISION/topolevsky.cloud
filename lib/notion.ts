@@ -50,6 +50,7 @@ let cachedPosts: { data: Post[]; timestamp: number } | null = null
 const CACHE_TTL = 10 * 60 * 1000 // 10 хвилин
 
 export async function getPublishedPosts(): Promise<Post[]> {
+	console.log('[Notion Debug] getPublishedPosts() called')
 	// Якщо кеш свіжий, віддаємо його без запитів до Notion та AI
 	if (cachedPosts && (Date.now() - cachedPosts.timestamp < CACHE_TTL)) {
 		console.log('[Notion Cache] Serving from memory cache...')
