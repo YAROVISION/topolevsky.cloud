@@ -31,3 +31,7 @@ next-env.d.ts
 kcs-links.json
 /trash/
 /SPECIFICATION_PLAN/
+tunnel.log
+test-db-final.mjs
+test-auth-db.ts
+temp_test.html
