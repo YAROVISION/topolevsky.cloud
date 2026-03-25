@@ -61,6 +61,8 @@ export async function getPublishedPosts(): Promise<Post[]> {
 		? rawDatabaseId.split('-').pop()?.trim() 
 		: rawDatabaseId.trim()
 
+	console.log(`[Notion Debug] Fetching posts for database: ${databaseId}`)
+
 	try {
 		const data = await notionFetch(`databases/${databaseId}/query`, {
 			filter: {
@@ -107,10 +109,11 @@ export async function getPublishedPosts(): Promise<Post[]> {
 		}
 
 		const result = posts
+		console.log(`[Notion Debug] Successfully found ${result.length} published posts.`)
 		cachedPosts = { data: result, timestamp: Date.now() }
 		return result
 	} catch (error: any) {
-		console.error('Notion fetch error:', error.message)
+		console.error('[Notion Debug] Fetch error:', error.message)
 		return []
 	}
 }
