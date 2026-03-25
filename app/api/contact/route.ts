@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
 		const ADMIN_EMAIL =
 			process.env.ADMIN_EMAIL ||
 			process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
-			'yarovision@gmail.com'
+			'support@lexis.blog'
 
 		const smtpHost = process.env.SMTP_HOST
 		const smtpPort = process.env.SMTP_PORT
