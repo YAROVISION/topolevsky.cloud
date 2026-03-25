@@ -76,7 +76,7 @@ export default function PrivacyPage() {
 							<p className="text-zinc-400">
 								Ви маєте право запитувати доступ до своїх даних, їх виправлення
 								або видалення. Для цього зверніться на нашу пошту
-								support@example.com.
+								support@lexis.blog.
 							</p>
 						</section>
 
@@ -96,7 +96,7 @@ export default function PrivacyPage() {
 							</h2>
 							<p className="text-zinc-400">
 								Якщо у вас є питання щодо цієї політики, пишіть на
-								support@example.com.
+								support@lexis.blog.
 							</p>
 						</section>
 
