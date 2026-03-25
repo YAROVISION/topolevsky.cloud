@@ -4,6 +4,7 @@ import { Manrope } from 'next/font/google'
 import localFont from 'next/font/local'
 import type React from 'react'
 import { Toaster } from 'sonner'
+import { ActivityTracker } from '@/components/activity-tracker'
 import './globals.css'
 
 const manrope = Manrope({
@@ -58,6 +59,7 @@ export default function RootLayout({
 						aria-hidden="true"
 					/>
 					{children}
+					<ActivityTracker />
 					<Toaster />
 				</Providers>
 			</body>
