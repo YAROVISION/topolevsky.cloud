@@ -57,7 +57,7 @@ export function FinalCTA() {
 						<Link href="/signup">
 							<Button
 								size="lg"
-								className="shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200 rounded-full px-8 h-14 text-base font-medium shadow-lg shadow-white/20"
+								className="shimmer-btn bg-white text-zinc-950 hover:bg-zinc-200 rounded-full px-8 h-14 text-base font-medium shadow-lg shadow-white/20 cursor-pointer"
 							>
 								Створити акаунт
 								<ArrowRight className="ml-2 w-5 h-5" />
@@ -68,7 +68,7 @@ export function FinalCTA() {
 						<Button
 							variant="outline"
 							size="lg"
-							className="rounded-full px-8 h-14 text-base font-medium border-zinc-800 text-zinc-300 hover:bg-zinc-900 hover:text-white hover:border-zinc-700 bg-transparent"
+							className="rounded-full px-8 h-14 text-base font-medium border-zinc-800 text-zinc-300 hover:bg-zinc-900 hover:text-white hover:border-zinc-700 bg-transparent cursor-pointer"
 						>
 							Читати документацію
 							<Book className="ml-2 w-5 h-5" />
