@@ -50,7 +50,6 @@ let cachedPosts: { data: Post[]; timestamp: number } | null = null
 const CACHE_TTL = 10 * 60 * 1000 // 10 хвилин
 
 export async function getPublishedPosts(): Promise<Post[]> {
-	console.log('[Notion Debug] getPublishedPosts() called')
 	// Якщо кеш свіжий, віддаємо його без запитів до Notion та AI
 	if (cachedPosts && (Date.now() - cachedPosts.timestamp < CACHE_TTL)) {
 		console.log('[Notion Cache] Serving from memory cache...')
@@ -61,8 +60,6 @@ export async function getPublishedPosts(): Promise<Post[]> {
 	const databaseId = rawDatabaseId.includes('-') && rawDatabaseId.length > 32 
 		? rawDatabaseId.split('-').pop()?.trim() 
 		: rawDatabaseId.trim()
-
-	console.log(`[Notion Debug] Fetching posts for database: ${databaseId}`)
 
 	try {
 		const data = await notionFetch(`databases/${databaseId}/query`, {
@@ -110,11 +107,10 @@ export async function getPublishedPosts(): Promise<Post[]> {
 		}
 
 		const result = posts
-		console.log(`[Notion Debug] Successfully found ${result.length} published posts.`)
 		cachedPosts = { data: result, timestamp: Date.now() }
 		return result
 	} catch (error: any) {
-		console.error('[Notion Debug] Fetch error:', error.message)
+		console.error('Notion fetch error:', error.message)
 		return []
 	}
 }
