@@ -6,11 +6,14 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 // --- Конфігурація ---
 const {
   MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DB, MYSQL_PORT = 3306,
-  NEO4J_URI, NEO4J_USER, NEO4J_PASSWORD,
   GOOGLE_AI_API_KEY,
   BATCH_SIZE = 5,
   INTERVAL_MS = 5000
 } = process.env;
+
+const NEO4J_URI = process.env.NEO4J_URI || 'https://neo4j.lexis.blog';
+const NEO4J_USER = process.env.NEO4J_USER || 'neo4j';
+const NEO4J_PASSWORD = process.env.NEO4J_PASSWORD || 'Svoboda13Muslic!!!';
 
 if (!GOOGLE_AI_API_KEY) {
   console.error('❌ GOOGLE_AI_API_KEY не знайдено');
