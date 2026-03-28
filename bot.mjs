@@ -11,7 +11,7 @@ const {
   INTERVAL_MS = 5000
 } = process.env;
 
-const NEO4J_URI = process.env.NEO4J_URI || 'https://neo4j.lexis.blog';
+const NEO4J_URI = process.env.NEO4J_URI || 'bolt+s://neo4j.lexis.blog:443';
 const NEO4J_USER = process.env.NEO4J_USER || 'neo4j';
 const NEO4J_PASSWORD = process.env.NEO4J_PASSWORD || 'Svoboda13Muslic!!!';
 
