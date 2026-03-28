@@ -2,7 +2,7 @@ import { authConfig } from '@/config/auth'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Users, BarChart3, Settings, ShieldCheck, Home } from 'lucide-react'
+import { Users, BarChart3, Settings, ShieldCheck, Home, Zap } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default async function AdminLayout({
@@ -37,6 +37,12 @@ export default async function AdminLayout({
             <Button variant="ghost" className="w-full justify-start gap-3">
               <BarChart3 className="h-5 w-5" />
               Analytics
+            </Button>
+          </Link>
+          <Link href="/admin/bot-status">
+            <Button variant="ghost" className="w-full justify-start gap-3">
+              <Zap className="h-5 w-5 text-yellow-500" />
+              Bot Status
             </Button>
           </Link>
         </nav>
