@@ -12,7 +12,6 @@ export const getNeo4jDriver = () => {
         driver = neo4j.driver(uri, neo4j.auth.basic(user, password), {
             maxConnectionPoolSize: 10,
             connectionTimeout: 10000,
-            encrypted: isProd ? true : false,
         });
     }
     return driver;
