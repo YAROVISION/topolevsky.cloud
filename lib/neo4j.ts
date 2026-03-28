@@ -1,6 +1,6 @@
 import neo4j from 'neo4j-driver';
 
-const uri = process.env.NEO4J_URI || (process.env.NODE_ENV === 'production' ? 'bolt+s://neo4j.lexis.blog:443' : 'bolt://localhost:7687');
+const uri = process.env.NEO4J_URI || (process.env.NODE_ENV === 'production' ? 'https://neo4j.lexis.blog' : 'bolt://localhost:7687');
 const user = process.env.NEO4J_USER || 'neo4j';
 const password = process.env.NEO4J_PASSWORD || 'Svoboda13Muslic!!!';
 
