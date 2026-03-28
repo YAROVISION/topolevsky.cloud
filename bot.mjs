@@ -40,7 +40,10 @@ async function initConnections() {
     });
     console.log('✓ MySQL підключено');
 
-    neoDriver = neo4j.driver(NEO4J_URI, neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD));
+    neoDriver = neo4j.driver(NEO4J_URI, neo4j.auth.basic(NEO4J_USER, NEO4J_PASSWORD), {
+      connectionTimeout: 10000,
+      maxConnectionPoolSize: 5
+    });
     await neoDriver.verifyConnectivity();
     console.log('✓ Neo4j підключено');
   } catch (err) {
